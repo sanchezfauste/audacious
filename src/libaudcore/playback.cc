@@ -238,7 +238,8 @@ static void end_cb()
         // single-song repeats are handled in run_playback()
         do_stop();
     }
-    else if (aud_get_bool("stop_after_current_song"))
+    else if (aud_get_bool("stop_after_current_song") ||
+             aud_get_bool("stop_after_each_song"))
     {
         do_stop();
         do_next();

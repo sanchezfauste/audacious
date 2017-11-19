@@ -954,6 +954,13 @@ static gboolean do_stop_after(Obj * obj, Invoc * invoc)
     return true;
 }
 
+static gboolean do_stop_after_each(Obj * obj, Invoc * invoc)
+{
+    /* thread-safe */
+    FINISH2(stop_after_each, aud_get_bool("stop_after_each_song"));
+    return true;
+}
+
 static gboolean do_stopped(Obj * obj, Invoc * invoc)
 {
     /* thread-safe */
@@ -997,6 +1004,14 @@ static gboolean do_toggle_stop_after(Obj * obj, Invoc * invoc)
     /* thread-safe (*except for bug in aud_toggle_bool) */
     aud_toggle_bool("stop_after_current_song");
     FINISH(toggle_stop_after);
+    return true;
+}
+
+static gboolean do_toggle_stop_after_each(Obj * obj, Invoc * invoc)
+{
+    /* thread-safe (*except for bug in aud_toggle_bool) */
+    aud_toggle_bool("stop_after_each_song");
+    FINISH(toggle_stop_after_each);
     return true;
 }
 
@@ -1100,12 +1115,14 @@ static const struct
     {"handle-status", (GCallback)do_status},
     {"handle-stop", (GCallback)do_stop},
     {"handle-stop-after", (GCallback)do_stop_after},
+    {"handle-stop-after-each", (GCallback)do_stop_after_each},
     {"handle-stopped", (GCallback)do_stopped},
     {"handle-time", (GCallback)do_time},
     {"handle-toggle-auto-advance", (GCallback)do_toggle_auto_advance},
     {"handle-toggle-repeat", (GCallback)do_toggle_repeat},
     {"handle-toggle-shuffle", (GCallback)do_toggle_shuffle},
     {"handle-toggle-stop-after", (GCallback)do_toggle_stop_after},
+    {"handle-toggle-stop-after-each", (GCallback)do_toggle_stop_after_each},
     {"handle-version", (GCallback)do_version},
     {"handle-volume", (GCallback)do_volume}};
 
