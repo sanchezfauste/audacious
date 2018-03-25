@@ -25,6 +25,7 @@
 #include <QString>
 #include <libaudcore/objects.h>
 
+class QIcon;
 class QLayout;
 class QBoxLayout;
 class QHBoxLayout;
@@ -46,6 +47,8 @@ enum class FileMode {
     OpenFolder,
     Add,
     AddFolder,
+    ImportPlaylist,
+    ExportPlaylist,
     count
 };
 
@@ -96,6 +99,8 @@ void init ();
 void run ();
 void quit ();
 void cleanup ();
+
+QIcon get_icon (const char * name);
 
 QHBoxLayout * make_hbox (QWidget * parent, int spacing = sizes.FourPt);
 QVBoxLayout * make_vbox (QWidget * parent, int spacing = sizes.FourPt);
