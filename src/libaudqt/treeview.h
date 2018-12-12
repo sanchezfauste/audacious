@@ -1,6 +1,6 @@
 /*
- * libaudqt-internal.h
- * Copyright 2016-2017 John Lindgren
+ * treeview.h
+ * Copyright 2018 John Lindgren
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -17,38 +17,32 @@
  * the use of this software.
  */
 
-#ifndef LIBAUDQT_INTERNAL_H
-#define LIBAUDQT_INTERNAL_H
+#ifndef LIBAUDQT_TREEVIEW_H
+#define LIBAUDQT_TREEVIEW_H
 
-#include <QWidget>
-
-class QPoint;
-class QScreen;
-class QString;
+#include <QTreeView>
+#include <libaudqt/export.h>
 
 namespace audqt {
 
-/* infopopup.cc */
-void infopopup_hide_now ();
-
-/* log-inspector.cc */
-void log_init ();
-void log_cleanup ();
-
-/* util-qt.cc */
-class PopupWidget : public QWidget
+// This class extends QTreeView and adds a couple of features:
+//  - An "activate" event (double click or Enter key)
+//  - A method to remove all selected rows (Delete key)
+class LIBAUDQT_PUBLIC TreeView : public QTreeView
 {
 public:
-    PopupWidget (QWidget * parent = nullptr);
+    TreeView (QWidget * parent = nullptr);
+    ~TreeView () override;
+
+    void removeSelectedRows ();
 
 protected:
-    bool eventFilter (QObject *, QEvent * e) override;
-    void showEvent (QShowEvent *) override;
-};
+    void keyPressEvent (QKeyEvent * event) override;
+    void mouseDoubleClickEvent (QMouseEvent * event) override;
 
-void show_copy_context_menu (QWidget * parent, const QPoint & global_pos,
- const QString & text_to_copy);
+    virtual void activate (const QModelIndex & index);
+};
 
 } // namespace audqt
 
-#endif // LIBAUDQT_INTERNAL_H
+#endif // LIBAUDQT_TREEVIEW_H
