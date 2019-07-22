@@ -771,7 +771,7 @@ EXPORT StringBuf uri_construct (const char * path, const char * reference)
     if (! buf)
         return StringBuf ();
 
-    if (aud_get_bool (nullptr, "convert_backslash"))
+    if (aud_get_bool ("convert_backslash"))
         str_replace_char (buf, '\\', '/');
 
     buf = str_encode_percent (buf);
@@ -792,7 +792,7 @@ EXPORT StringBuf uri_construct (const char * path, const char * reference)
 
 EXPORT StringBuf uri_deconstruct (const char * uri, const char * reference)
 {
-    if (aud_get_bool (nullptr, "export_relative_paths"))
+    if (aud_get_bool ("export_relative_paths"))
     {
         const char * slash = strrchr (reference, '/');
         if (slash && ! strncmp (uri, reference, slash + 1 - reference))
@@ -856,7 +856,7 @@ EXPORT int str_compare (const char * ap, const char * bp)
     return 0;
 }
 
-/* Decodes percent-encoded strings, then compares then with str_compare. */
+/* Decodes percent-encoded strings, then compares them with str_compare. */
 
 EXPORT int str_compare_encoded (const char * ap, const char * bp)
 {
@@ -1174,11 +1174,11 @@ EXPORT StringBuf str_format_time (int64_t milliseconds)
     int minutes = milliseconds / 60000;
     int seconds = (milliseconds / 1000) % 60;
 
-    if (hours && aud_get_bool (nullptr, "show_hours"))
+    if (hours && aud_get_bool ("show_hours"))
         return str_printf ("%s%d:%02d:%02d", neg ? "- " : "",  hours, minutes % 60, seconds);
     else
     {
-        bool zero = aud_get_bool (nullptr, "leading_zero");
+        bool zero = aud_get_bool ("leading_zero");
         return str_printf (zero ? "%s%02d:%02d" : "%s%d:%02d", neg ? "- " : "", minutes, seconds);
     }
 }

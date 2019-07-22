@@ -67,10 +67,12 @@ public:
     ~SmartPtr ()
         { if (ptr) deleter (ptr); }
 
-    void capture (T * ptr2)
+    bool capture (T * ptr2)
     {
-        if (ptr) deleter (ptr);
+        if (ptr)
+            deleter (ptr);
         ptr = ptr2;
+        return (bool) ptr;
     }
 
     T * release ()
@@ -143,7 +145,7 @@ public:
         raw (nullptr) {}
 
     ~String ()
-        { raw_unref (raw); }
+        { if (raw) raw_unref (raw); }
 
     String (const String & b) :
         raw (raw_ref (b.raw)) {}

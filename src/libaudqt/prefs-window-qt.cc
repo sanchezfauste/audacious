@@ -298,6 +298,16 @@ static const PreferencesWidget connectivity_page_widgets[] = {
     WidgetCheck (N_("Use authentication with proxy"),
         WidgetBool (0, "use_proxy_auth")),
     WidgetTable ({{proxy_auth_elements}},
+        WIDGET_CHILD),
+    WidgetCheck (N_("Use SOCKS proxy"),
+        WidgetBool (0, "socks_proxy")),
+    WidgetRadio (N_("SOCKS v4a"),
+        WidgetInt (0, "socks_type"),
+        {0},
+        WIDGET_CHILD),
+    WidgetRadio (N_("SOCKS v5"),
+        WidgetInt (0, "socks_type"),
+        {1},
         WIDGET_CHILD)
 };
 
@@ -438,7 +448,7 @@ static void * create_titlestring_table ()
     QLineEdit * le = new QLineEdit (w);
     l->addWidget (le, 1, 1);
 
-    String format = aud_get_str (nullptr, "generic_title_format");
+    String format = aud_get_str ("generic_title_format");
     le->setText ((const char *) format);
     for (int i = 0; i < TITLESTRING_NPRESETS; i ++)
     {
@@ -447,7 +457,7 @@ static void * create_titlestring_table ()
     }
 
     QObject::connect (le, & QLineEdit::textChanged, [] (const QString & text) {
-        aud_set_str (nullptr, "generic_title_format", text.toUtf8 ().data ());
+        aud_set_str ("generic_title_format", text.toUtf8 ().data ());
     });
 
     void (QComboBox::* signal) (int) = & QComboBox::currentIndexChanged;

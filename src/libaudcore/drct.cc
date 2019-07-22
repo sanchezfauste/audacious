@@ -80,7 +80,7 @@ static PluginHandle * record_plugin;
 static bool record_plugin_watcher (PluginHandle *, void *)
 {
     if (! aud_drct_get_record_enabled ())
-        aud_set_bool (nullptr, "record", false);
+        aud_set_bool ("record", false);
 
     hook_call ("enable record", nullptr);
     return true;
@@ -88,11 +88,11 @@ static bool record_plugin_watcher (PluginHandle *, void *)
 
 static void validate_record_setting (void *, void *)
 {
-    if (aud_get_bool (nullptr, "record") && ! aud_drct_get_record_enabled ())
+    if (aud_get_bool ("record") && ! aud_drct_get_record_enabled ())
     {
         /* User attempted to start recording without a recording plugin enabled.
          * This is probably not the best response, but better than nothing. */
-        aud_set_bool (nullptr, "record", false);
+        aud_set_bool ("record", false);
         aud_ui_show_error (_("Stream recording must be configured in Audio "
          "Settings before it can be used."));
     }
@@ -108,7 +108,7 @@ void record_init ()
     }
 
     if (! aud_drct_get_record_enabled ())
-        aud_set_bool (nullptr, "record", false);
+        aud_set_bool ("record", false);
 
     hook_associate ("set record", validate_record_setting, nullptr);
 }
@@ -198,7 +198,7 @@ EXPORT void aud_drct_pl_next ()
     if (playlist == Playlist ())
         playlist = Playlist::active_playlist ();
 
-    playlist.next_song (aud_get_bool (nullptr, "repeat"));
+    playlist.next_song (aud_get_bool ("repeat"));
 }
 
 EXPORT void aud_drct_pl_prev ()
@@ -234,12 +234,12 @@ EXPORT void aud_drct_pl_open (const char * filename)
 {
     Index<PlaylistAddItem> items;
     items.append (String (filename));
-    add_list (std::move (items), -1, aud_get_bool (nullptr, "open_to_temporary"), true);
+    add_list (std::move (items), -1, aud_get_bool ("open_to_temporary"), true);
 }
 
 EXPORT void aud_drct_pl_open_list (Index<PlaylistAddItem> && items)
 {
-    add_list (std::move (items), -1, aud_get_bool (nullptr, "open_to_temporary"), true);
+    add_list (std::move (items), -1, aud_get_bool ("open_to_temporary"), true);
 }
 
 EXPORT void aud_drct_pl_open_temp (const char * filename)

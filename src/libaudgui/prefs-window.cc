@@ -268,6 +268,16 @@ static const PreferencesWidget connectivity_page_widgets[] = {
     WidgetCheck (N_("Use authentication with proxy"),
         WidgetBool (0, "use_proxy_auth")),
     WidgetTable ({{proxy_auth_elements}},
+        WIDGET_CHILD),
+    WidgetCheck (N_("Use SOCKS proxy"),
+        WidgetBool (0, "socks_proxy")),
+    WidgetRadio (N_("SOCKS v4a"),
+        WidgetInt (0, "socks_type"),
+        {0},
+        WIDGET_CHILD),
+    WidgetRadio (N_("SOCKS v5"),
+        WidgetInt (0, "socks_type"),
+        {1},
         WIDGET_CHILD)
 };
 
@@ -461,7 +471,7 @@ static void update_titlestring_cbox (GtkComboBox * cbox, const char * format)
 static void on_titlestring_entry_changed (GtkEntry * entry, GtkComboBox * cbox)
 {
     const char * format = gtk_entry_get_text (entry);
-    aud_set_str (nullptr, "generic_title_format", format);
+    aud_set_str ("generic_title_format", format);
     update_titlestring_cbox (cbox, format);
 }
 
@@ -543,7 +553,7 @@ static void create_titlestring_widgets (GtkWidget * * cbox, GtkWidget * * entry)
 
     * entry = gtk_entry_new ();
 
-    String format = aud_get_str (nullptr, "generic_title_format");
+    String format = aud_get_str ("generic_title_format");
     update_titlestring_cbox ((GtkComboBox *) * cbox, format);
     gtk_entry_set_text ((GtkEntry *) * entry, format);
 
