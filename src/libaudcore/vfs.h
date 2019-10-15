@@ -1,6 +1,6 @@
 /*
  * vfs.h
- * Copyright 2006-2013 William Pitcock, Daniel Barkalow, Ralf Ertzinger,
+ * Copyright 2006-2013 Ariadne Conill, Daniel Barkalow, Ralf Ertzinger,
  *                     Yoshiki Yazawa, Matti Hämäläinen, and John Lindgren
  *
  * Redistribution and use in source and binary forms, with or without
@@ -171,6 +171,9 @@ public:
     /* convenience functions to read/write entire files */
     static Index<char> read_file (const char * filename, VFSReadOptions options);
     static bool write_file (const char * filename, const void * data, int64_t len);
+
+    /* returns a list of supported URI schemes */
+    static Index<const char *> supported_uri_schemes ();
 
 private:
     String m_filename, m_error;

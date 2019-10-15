@@ -1,6 +1,6 @@
 /*
  * main.c
- * Copyright 2007-2013 William Pitcock and John Lindgren
+ * Copyright 2007-2013 Ariadne Conill and John Lindgren
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -199,9 +199,7 @@ static void do_remote ()
     ObjAudacious * obj = nullptr;
     GError * error = nullptr;
 
-#if ! GLIB_CHECK_VERSION (2, 36, 0)
     g_type_init ();
-#endif
 
     /* check whether the selected instance is running */
     if (dbus_server_init () != StartupType::Client)

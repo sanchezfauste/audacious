@@ -1,6 +1,6 @@
 /*
  * main.c
- * Copyright 2005-2013 George Averill, William Pitcock, Yoshiki Yazawa, and
+ * Copyright 2005-2013 George Averill, Ariadne Conill, Yoshiki Yazawa, and
  *                     John Lindgren
  *
  * Redistribution and use in source and binary forms, with or without
@@ -224,9 +224,7 @@ int main (int argc, char * * argv)
 
     setlocale (LC_CTYPE, "");
 
-#if ! GLIB_CHECK_VERSION (2, 36, 0)
     g_type_init();
-#endif
 
 #ifdef _WIN32
     g_set_print_handler (print_utf8);

@@ -1,6 +1,6 @@
 /*
  * prefs-builder.cc
- * Copyright 2014 William Pitcock and John Lindgren
+ * Copyright 2014 Ariadne Conill and John Lindgren
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -149,8 +149,9 @@ void prefs_populate (QBoxLayout * layout, ArrayRef<PreferencesWidget> widgets, c
             break;
 
         case PreferencesWidget::Entry:
-        /* TODO: implement file chooser */
+        /* TODO: implement file chooser and font selector */
         case PreferencesWidget::FileEntry:
+        case PreferencesWidget::FontButton:
             layout->addWidget (new StringWidget (& w, domain));
             break;
 
@@ -167,11 +168,6 @@ void prefs_populate (QBoxLayout * layout, ArrayRef<PreferencesWidget> widgets, c
 
             break;
         }
-
-        case PreferencesWidget::FontButton:
-            /* XXX: unimplemented */
-            AUDDBG ("font buttons are unimplemented\n");
-            break;
 
         case PreferencesWidget::ComboBox:
             layout->addWidget (new ComboBoxWidget (& w, domain));
