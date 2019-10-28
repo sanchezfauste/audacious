@@ -20,10 +20,14 @@
 #ifndef LIBAUDCORE_VFS_ASYNC_H
 #define LIBAUDCORE_VFS_ASYNC_H
 
+#include <functional>
 #include <libaudcore/index.h>
 
-typedef void (* VFSConsumer) (const char * filename, const Index<char> & buf, void * user);
+using VFSConsumer2 = std::function<void(const char * filename, const Index<char> & buf)>;
+void vfs_async_file_get_contents (const char * filename, VFSConsumer2 cons_f);
 
+/* old version -- remove this at next hard API break */
+typedef void (* VFSConsumer) (const char * filename, const Index<char> & buf, void * user);
 void vfs_async_file_get_contents (const char * filename, VFSConsumer cons_f, void * user);
 
 #endif

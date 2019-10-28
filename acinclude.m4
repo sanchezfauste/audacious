@@ -178,14 +178,13 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.32)
 PKG_CHECK_MODULES(GMODULE, gmodule-2.0 >= 2.32)
 
 AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_32], [target GLib 2.32])
-AC_DEFINE([GLIB_VERSION_MAX_ALLOWED], [GLIB_VERSION_2_32], [target GLib 2.32])
 
 dnl GTK+ support
 dnl =============
 
 AC_ARG_ENABLE(gtk,
- AS_HELP_STRING(--disable-gtk, [Disable GTK+ support (default=enabled)]),
- USE_GTK=$enableval, USE_GTK=yes)
+ AS_HELP_STRING(--enable-gtk, [Enable GTK+ support (default=disabled)]),
+ USE_GTK=$enableval, USE_GTK=no)
 
 if test $USE_GTK = yes ; then
     PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.24)
@@ -213,8 +212,8 @@ dnl Qt support
 dnl ==========
 
 AC_ARG_ENABLE(qt,
- AS_HELP_STRING(--enable-qt, [Enable Qt support (default=disabled)]),
- USE_QT=$enableval, USE_QT=no)
+ AS_HELP_STRING(--disable-qt, [Disable Qt support (default=enabled)]),
+ USE_QT=$enableval, USE_QT=yes)
 
 if test $USE_QT = yes ; then
     PKG_CHECK_MODULES([QTCORE], [Qt5Core >= 5.2])
