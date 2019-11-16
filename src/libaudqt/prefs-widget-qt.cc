@@ -54,6 +54,7 @@ void HookableWidget::update_from_cfg ()
 ButtonWidget::ButtonWidget (const PreferencesWidget * parent, const char * domain) :
     QPushButton (translate_str (parent->label, domain))
 {
+    setAutoDefault (false);
     QObject::connect (this, & QPushButton::clicked, parent->data.button.callback);
 }
 
@@ -209,6 +210,73 @@ StringWidget::StringWidget (const PreferencesWidget * parent, const char * domai
 }
 
 void StringWidget::update ()
+{
+    m_lineedit->setText ((const char *) m_parent->cfg.get_string ());
+}
+
+/* file widget (audqt::FileEntry) */
+FileWidget::FileWidget (const PreferencesWidget * parent, const char * domain) :
+    HookableWidget (parent, domain)
+{
+    QFileDialog::FileMode file_mode;
+    const char *title;
+
+    switch (parent->data.file_entry.mode)
+    {
+    default:
+    case FileSelectMode::File:
+        file_mode = QFileDialog::ExistingFile;
+        title = _("Choose File");
+        break;
+    case FileSelectMode::Folder:
+        file_mode = QFileDialog::Directory;
+        title = _("Choose Folder");
+        break;
+    }
+
+    m_lineedit = file_entry_new (this, title, file_mode, QFileDialog::AcceptOpen);
+
+    auto layout = make_hbox (this);
+
+    if (parent->label)
+        layout->addWidget (new QLabel (translate_str (parent->label, domain)));
+
+    layout->addWidget (m_lineedit, 1);
+
+    update ();
+
+    QObject::connect (m_lineedit, & QLineEdit::textChanged, [this] (const QString &) {
+        if (! m_updating)
+            m_parent->cfg.set_string (file_entry_get_uri (m_lineedit));
+    });
+}
+
+void FileWidget::update ()
+{
+    file_entry_set_uri (m_lineedit, m_parent->cfg.get_string ());
+}
+
+/* font widget (audqt::FontEntry) */
+FontWidget::FontWidget (const PreferencesWidget * parent, const char * domain) :
+    HookableWidget (parent, domain),
+    m_lineedit (font_entry_new (this, nullptr))
+{
+    auto layout = make_hbox (this);
+
+    if (parent->label)
+        layout->addWidget (new QLabel (translate_str (parent->label, domain)));
+
+    layout->addWidget (m_lineedit, 1);
+
+    update ();
+
+    QObject::connect (m_lineedit, & QLineEdit::textChanged, [this] (const QString & value) {
+        if (! m_updating)
+            m_parent->cfg.set_string (value.toUtf8 ());
+    });
+}
+
+void FontWidget::update ()
 {
     m_lineedit->setText ((const char *) m_parent->cfg.get_string ());
 }

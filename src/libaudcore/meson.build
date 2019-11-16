@@ -58,7 +58,6 @@ libaudcore_sources = [
 
 
 libaudcore_headers = [
-  'audio.h',
   'audstrings.h',
   'drct.h',
   'equalizer.h',
@@ -87,6 +86,13 @@ libaudcore_headers = [
   'vfs.h',
   'vfs_async.h'
 ]
+
+
+audio_h = configure_file(input: 'audio.h.in',
+  output: 'audio.h',
+  configuration: conf,
+  install: true,
+  install_dir: join_paths(get_option('includedir'), 'libaudcore'))
 
 
 libaudcore_deps = [glib_dep, gmodule_dep]

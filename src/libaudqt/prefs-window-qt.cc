@@ -152,6 +152,7 @@ static const TitleFieldTag title_field_tags[] = {
     { N_("File name")   , "${file-name}" },
     { N_("File path")   , "${file-path}" },
     { N_("Date")        , "${date}" },
+    { N_("Description") , "${description}" },
     { N_("Year")        , "${year}" },
     { N_("Comment")     , "${comment}" },
     { N_("Codec")       , "${codec}" },
@@ -623,6 +624,11 @@ PrefsWindow::PrefsWindow () :
     setAttribute (Qt::WA_DeleteOnClose);
     setWindowTitle (_("Audacious Settings"));
     setContentsMargins (0, 0, 0, 0);
+
+    output_config_button->setAutoDefault (false);
+    output_about_button->setAutoDefault (false);
+    record_config_button->setAutoDefault (false);
+    record_about_button->setAutoDefault (false);
 
     QToolBar * toolbar = new QToolBar;
     toolbar->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
