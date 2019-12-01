@@ -103,15 +103,14 @@ class InfoWindow : public QDialog
 public:
     InfoWindow (QWidget * parent = nullptr);
 
-    void fillInfo (const char * filename, const Tuple & tuple,
-     PluginHandle * decoder, bool updating_enabled);
+    void fillInfo (Index<PlaylistAddItem> && items, bool updating_enabled);
 
 private:
     String m_filename;
     QLabel m_image;
     TextWidget m_uri_label;
     InfoWidget m_infowidget;
-    QLabel m_hint_icon, m_hint_text;
+    QPushButton * m_save_btn;
 
     void displayImage (const char * filename);
 
@@ -138,31 +137,27 @@ InfoWindow::InfoWindow (QWidget * parent) : QDialog (parent)
     left_vbox->setStretch (0, 1);
     left_vbox->setStretch (1, 0);
 
-    int size = style ()->pixelMetric (QStyle::PM_SmallIconSize);
-    m_hint_icon.setPixmap (get_icon ("dialog-information").pixmap (size));
-    m_hint_text.setText (_("Click on a value and press Ctrl+C to copy.\n"
-                           "Click on a value twice to edit."));
-
-    auto hint_hbox = make_hbox (nullptr);
-    hint_hbox->addStretch (1);
-    hint_hbox->addWidget (& m_hint_icon);
-    hint_hbox->addWidget (& m_hint_text);
-    hint_hbox->addStretch (1);
-
-    auto right_vbox = make_vbox (nullptr);
-    right_vbox->addWidget (& m_infowidget);
-    right_vbox->addLayout (hint_hbox);
-
     auto hbox = make_hbox (nullptr);
     hbox->addLayout (left_vbox);
-    hbox->addLayout (right_vbox);
+    hbox->addWidget (& m_infowidget);
 
     auto vbox = make_vbox (this);
     vbox->addLayout (hbox);
 
-    auto bbox = new QDialogButtonBox (QDialogButtonBox::Save | QDialogButtonBox::Close, this);
-    bbox->button (QDialogButtonBox::Save)->setText (translate_str (N_("_Save")));
-    bbox->button (QDialogButtonBox::Close)->setText (translate_str (N_("_Close")));
+    auto bbox = new QDialogButtonBox (QDialogButtonBox::Save |
+                                      QDialogButtonBox::Close |
+                                      QDialogButtonBox::Reset, this);
+
+    m_save_btn = bbox->button (QDialogButtonBox::Save);
+    auto close_btn = bbox->button (QDialogButtonBox::Close),
+         revert_btn = bbox->button (QDialogButtonBox::Reset);
+
+    close_btn->setText (translate_str (N_("_Close")));
+    revert_btn->setText (translate_str (N_("_Revert")));
+
+    m_infowidget.linkEnabled (m_save_btn);
+    m_infowidget.linkEnabled (revert_btn);
+
     vbox->addWidget (bbox);
 
     connect (bbox, & QDialogButtonBox::accepted, [this] () {
@@ -171,15 +166,27 @@ InfoWindow::InfoWindow (QWidget * parent) : QDialog (parent)
     });
 
     connect (bbox, & QDialogButtonBox::rejected, this, & QObject::deleteLater);
+    connect (revert_btn, & QPushButton::clicked, & m_infowidget, & InfoWidget::revertInfo);
 }
 
-void InfoWindow::fillInfo (const char * filename, const Tuple & tuple,
- PluginHandle * decoder, bool updating_enabled)
+void InfoWindow::fillInfo (Index<PlaylistAddItem> && items, bool updating_enabled)
 {
-    m_filename = String (filename);
-    m_uri_label.setText ((QString) uri_to_display (filename));
-    displayImage (filename);
-    m_infowidget.fillInfo (filename, tuple, decoder, updating_enabled);
+    if (items.len () == 1)
+    {
+        m_filename = String (items[0].filename);
+        m_uri_label.setText ((QString) uri_to_display (m_filename));
+        displayImage (m_filename);
+        m_save_btn->setText (translate_str (N_("_Save")));
+    }
+    else
+    {
+        m_filename = String ();
+        m_uri_label.setText (translate_str (N_("%1 files selected")).arg (items.len ()));
+        m_image.setPixmap (get_icon ("audio-x-generic").pixmap (to_native_dpi (48)));
+        m_save_btn->setText (translate_str (N_("_Save %1 files")).arg (items.len ()));
+    }
+
+    m_infowidget.fillInfo (std::move (items), updating_enabled);
 }
 
 void InfoWindow::displayImage (const char * filename)
@@ -190,8 +197,7 @@ void InfoWindow::displayImage (const char * filename)
 
 static InfoWindow * s_infowin = nullptr;
 
-static void show_infowin (const char * filename,
- const Tuple & tuple, PluginHandle * decoder, bool can_write)
+static void show_infowin (Index<PlaylistAddItem> && items, bool can_write)
 {
     if (! s_infowin)
     {
@@ -203,12 +209,13 @@ static void show_infowin (const char * filename,
         });
     }
 
-    s_infowin->fillInfo (filename, tuple, decoder, can_write);
+    s_infowin->fillInfo (std::move (items), can_write);
     s_infowin->resize (6 * sizes.OneInch, 3 * sizes.OneInch);
     window_bring_to_front (s_infowin);
 }
 
-EXPORT void infowin_show (Playlist playlist, int entry)
+static void fetch_entry (Playlist playlist, int entry,
+                         Index<PlaylistAddItem> & items, bool & can_write)
 {
     String filename = playlist.entry_filename (entry);
     if (! filename)
@@ -218,21 +225,50 @@ EXPORT void infowin_show (Playlist playlist, int entry)
     PluginHandle * decoder = playlist.entry_decoder (entry, Playlist::Wait, & error);
     Tuple tuple = decoder ? playlist.entry_tuple (entry, Playlist::Wait, & error) : Tuple ();
 
-    if (decoder && tuple.valid () && ! aud_custom_infowin (filename, decoder))
+    if (decoder && tuple.valid ())
     {
         /* cuesheet entries cannot be updated */
-        bool can_write = aud_file_can_write_tuple (filename, decoder) &&
-         ! tuple.is_set (Tuple::StartTime);
+        can_write = (can_write && aud_file_can_write_tuple (filename, decoder)
+                               && ! tuple.is_set (Tuple::StartTime));
 
         tuple.delete_fallbacks ();
-        show_infowin (filename, tuple, decoder, can_write);
+        items.append (filename, std::move (tuple), decoder);
     }
-    else
-        infowin_hide ();
 
     if (error)
         aud_ui_show_error (str_printf (_("Error opening %s:\n%s"),
          (const char *) filename, (const char *) error));
+}
+
+EXPORT void infowin_show (Playlist playlist, int entry)
+{
+    Index<PlaylistAddItem> items;
+    bool can_write = true;
+
+    fetch_entry (playlist, entry, items, can_write);
+
+    if (items.len ())
+        show_infowin (std::move (items), can_write);
+    else
+        infowin_hide ();
+}
+
+EXPORT void infowin_show_selected (Playlist playlist)
+{
+    Index<PlaylistAddItem> items;
+    bool can_write = true;
+
+    int n_entries = playlist.n_entries ();
+    for (int entry = 0; entry < n_entries; entry ++)
+    {
+        if (playlist.entry_selected (entry))
+            fetch_entry (playlist, entry, items, can_write);
+    }
+
+    if (items.len ())
+        show_infowin (std::move (items), can_write);
+    else
+        infowin_hide ();
 }
 
 EXPORT void infowin_show_current ()

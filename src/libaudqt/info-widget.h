@@ -22,8 +22,10 @@
 #define LIBAUDQT_INFO_WIDGET_H
 
 #include <QTreeView>
+#include <libaudcore/index.h>
 #include <libaudqt/export.h>
 
+struct PlaylistAddItem;
 class PluginHandle;
 class Tuple;
 
@@ -39,7 +41,13 @@ public:
 
     void fillInfo (const char * filename, const Tuple & tuple,
      PluginHandle * decoder, bool updating_enabled);
+    void fillInfo (Index<PlaylistAddItem> && items, bool updating_enabled);
+    void linkEnabled (QWidget * widget);
+    void revertInfo ();
     bool updateFile ();
+
+protected:
+    void keyPressEvent (QKeyEvent * event) override;
 
 private:
     InfoModel * m_model;
