@@ -3,7 +3,7 @@ project('audacious', 'c', 'cpp',
         meson_version: '>= 0.50')
 
 
-copyright = 'Copyright (C) 2001-2018 Audacious developers and others'
+copyright = 'Copyright (C) 2001-2020 Audacious developers and others'
 
 
 qt5 = import('qt5')
@@ -18,6 +18,11 @@ gmodule_dep = dependency('gmodule-2.0', version: glib_req, required: true)
 if get_option('qt')
   qt_req = '>= 5.2'
   qt_dep = dependency('qt5', version: qt_req, required: true, modules: ['Core', 'Widgets', 'Gui'])
+endif
+
+
+if get_option('libarchive')
+  libarchive_dep = dependency('libarchive', required: true)
 endif
 
 
@@ -118,6 +123,11 @@ endif
 
 if get_option('qt')
   conf.set10('USE_QT', true)
+endif
+
+
+if get_option('libarchive')
+  conf.set10('USE_LIBARCHIVE', true)
 endif
 
 

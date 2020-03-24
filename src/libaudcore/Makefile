@@ -3,6 +3,7 @@ LIB_MAJOR = 5
 LIB_MINOR = 2
 
 SRCS = adder.cc \
+       archive_reader.cc \
        art.cc \
        art-search.cc \
        audio.cc \
@@ -55,7 +56,8 @@ SRCS = adder.cc \
        vis-runner.cc \
        visualization.cc
 
-INCLUDES = audio.h \
+INCLUDES = archive_reader.h \
+           audio.h \
            audstrings.h \
            drct.h \
            equalizer.h \
@@ -96,6 +98,7 @@ CPPFLAGS := -I.. -I../.. \
             ${GLIB_CFLAGS} \
             ${GMODULE_CFLAGS} \
             ${QTCORE_CFLAGS} \
+            ${LIBARCHIVE_CFLAGS} \
             -DINSTALL_BINDIR=\"${bindir}\" \
             -DINSTALL_DATADIR=\"${datadir}/audacious\" \
             -DINSTALL_PLUGINDIR=\"${plugindir}\" \
@@ -110,4 +113,5 @@ LIBS := ../libguess/libguess.a \
         ${LIBS} -lm \
         ${GLIB_LIBS} \
         ${GMODULE_LIBS} \
-        ${QTCORE_LIBS}
+        ${QTCORE_LIBS} \
+        ${LIBARCHIVE_LIBS}

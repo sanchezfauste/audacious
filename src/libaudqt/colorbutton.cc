@@ -18,34 +18,45 @@
  */
 
 #include "colorbutton.h"
+#include "libaudqt.h"
 
-namespace audqt {
+#include <QColorDialog>
+#include <QPainter>
 
-ColorButton::ColorButton (QWidget * parent) :
-    QPushButton (parent)
+namespace audqt
 {
-    connect (this, &QPushButton::clicked, this, &ColorButton::onClicked);
+
+ColorButton::ColorButton(QWidget * parent) : QPushButton(parent)
+{
+    connect(this, &QPushButton::clicked, [this]() {
+        auto dialog = findChild<QColorDialog *>();
+        if (!dialog)
+        {
+            dialog = new QColorDialog(m_color, this);
+            dialog->setAttribute(Qt::WA_DeleteOnClose);
+            connect(dialog, &QColorDialog::colorSelected, this,
+                    &ColorButton::setColor);
+        }
+
+        window_bring_to_front(dialog);
+    });
 }
 
-void ColorButton::setColor (const QColor & color)
+void ColorButton::setColor(const QColor & color)
 {
     if (color != m_color)
     {
         m_color = color;
+        update();
 
-        QString style = QStringLiteral ("QWidget { background-color: %1; border: none; }").arg (m_color.name ());
-        setStyleSheet (style);
-
-        onColorChanged ();
+        onColorChanged();
     }
 }
 
-void ColorButton::onClicked ()
+void ColorButton::paintEvent(QPaintEvent * event)
 {
-    QColorDialog dialog (m_color);
-
-    if (dialog.exec() == QDialog::Accepted)
-        setColor (dialog.selectedColor ());
+    QPushButton::paintEvent(event);
+    QPainter(this).fillRect(rect() - margins.FourPt, m_color);
 }
 
-}
+} // namespace audqt

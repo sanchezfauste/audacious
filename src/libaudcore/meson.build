@@ -3,6 +3,7 @@ libaudcore_inc = include_directories('.')
 
 libaudcore_sources = [
   'adder.cc',
+  'archive_reader.cc',
   'art.cc',
   'art-search.cc',
   'audio.cc',
@@ -58,6 +59,7 @@ libaudcore_sources = [
 
 
 libaudcore_headers = [
+  'archive_reader.h',
   'audstrings.h',
   'drct.h',
   'equalizer.h',
@@ -99,6 +101,11 @@ libaudcore_deps = [glib_dep, gmodule_dep]
 
 if get_option('qt')
   libaudcore_deps += [qt_dep]
+endif
+
+
+if get_option('libarchive')
+  libaudcore_deps += [libarchive_dep]
 endif
 
 
