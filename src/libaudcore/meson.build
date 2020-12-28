@@ -45,6 +45,7 @@ libaudcore_sources = [
   'scanner.cc',
   'stringbuf.cc',
   'strpool.cc',
+  'threads.cc',
   'tinylock.cc',
   'timer.cc',
   'tuple.cc',
@@ -104,6 +105,11 @@ if get_option('qt')
 endif
 
 
+if get_option('gtk')
+  libaudcore_deps += [gtk_dep]
+endif
+
+
 if get_option('libarchive')
   libaudcore_deps += [libarchive_dep]
 endif
@@ -124,7 +130,7 @@ libaudcore_lib = library('audcore',
   include_directories: src_inc,
   dependencies: libaudcore_deps,
   link_with: libguess_lib,
-  version: '5.1.0',
+  version: '5.3.0',
   soversion: '5',
   install: true
 )
