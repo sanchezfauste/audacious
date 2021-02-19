@@ -1,6 +1,6 @@
 project('audacious', 'c', 'cpp',
-        version: '4.1-devel',
-        meson_version: '>= 0.50',
+        version: '4.1',
+        meson_version: '>= 0.46',
         default_options: [
           'c_std=gnu99',
           'cpp_std=gnu++11',
@@ -8,7 +8,7 @@ project('audacious', 'c', 'cpp',
         ])
 
 
-copyright = 'Copyright (C) 2001-2020 Audacious developers and others'
+copyright = 'Copyright (C) 2001-2021 Audacious developers and others'
 
 
 qt5 = import('qt5')
@@ -102,8 +102,11 @@ endif
 
 # XXX - why do we have to define this manually?
 if (cxx.has_header('libintl.h'))
-  add_project_arguments('-DHAVE_GETTEXT', language: 'c')
-  add_project_arguments('-DHAVE_GETTEXT', language: 'cpp')
+  add_project_arguments('-DHAVE_GETTEXT', language: ['c', 'cpp'])
+
+  if have_darwin or have_windows
+    add_project_link_arguments('-lintl', language: ['c', 'cpp'])
+  endif
 endif
 
 
