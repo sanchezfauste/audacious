@@ -19,6 +19,7 @@
 
 #include "id3-common.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -139,18 +140,13 @@ void id3_decode_genre (Tuple & tuple, const char * data, int size)
     if (! text)
         return;
 
-    if (text[0] == '(')
-        numericgenre = atoi (text + 1);
-    else
-        numericgenre = atoi (text);
-
-    if (numericgenre > 0)
+    if (sscanf (text, "(%d)", & numericgenre) == 1 || sscanf (text, "%d", & numericgenre) == 1)
         tuple.set_str (Tuple::Genre, convert_numericgenre_to_text (numericgenre));
     else
         tuple.set_str (Tuple::Genre, text);
 }
 
-void id3_decode_comment (Tuple & tuple, const char * data, int size)
+void id3_associate_memo (Tuple & tuple, Tuple::Field field, const char * data, int size)
 {
     if (size < 4)
         return;
@@ -162,11 +158,12 @@ void id3_decode_comment (Tuple & tuple, const char * data, int size)
     StringBuf type = id3_convert (data + 4, before_nul, data[0]);
     StringBuf value = id3_convert (data + 4 + after_nul, size - 4 - after_nul, data[0]);
 
-    AUDDBG ("Comment: lang = %.3s, type = %s, value = %s.\n", lang,
-     (const char *) type, (const char *) value);
+    AUDDBG ("Field %s: lang = %.3s, type = %s, value = %s.\n",
+     Tuple::field_get_name (field), lang, (const char *) type,
+     (const char *) value);
 
     if (type && ! type[0] && value) /* blank type = actual comment */
-        tuple.set_str (Tuple::Comment, value);
+        tuple.set_str (field, value);
 }
 
 static bool decode_rva_block (const char * * _data, int * _size,
@@ -292,7 +289,9 @@ void id3_decode_txxx (Tuple & tuple, const char * data, int size)
 
     if (key && value)
     {
-        if (! strcmp_nocase (key, "REPLAYGAIN_TRACK_GAIN"))
+        if (! strcmp_nocase (key, "CATALOGNUMBER"))
+            tuple.set_str(Tuple::CatalogNum, value);
+        else if (! strcmp_nocase (key, "REPLAYGAIN_TRACK_GAIN"))
             tuple.set_gain (Tuple::TrackGain, Tuple::GainDivisor, value);
         else if (! strcmp_nocase (key, "REPLAYGAIN_TRACK_PEAK"))
             tuple.set_gain (Tuple::TrackPeak, Tuple::PeakDivisor, value);

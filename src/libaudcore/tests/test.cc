@@ -265,6 +265,7 @@ static void test_tuple_formats()
     test_tuple_format("x${?title:Field Exists}", tuple, "xField Exists");
     test_tuple_format("x${?artist:Field Exists}", tuple, "x");
     test_tuple_format("x${?artist}", tuple, "Song Title");
+    test_tuple_format("x${?disc-number:Field Exists}", tuple, "x");
 
     /* equality tests */
     test_tuple_format("x${=}", tuple, "Song Title");
@@ -320,6 +321,27 @@ static void test_tuple_formats()
     test_tuple_format("x${(empty)?artist:Empty}", tuple, "x");
     test_tuple_format("x${(empty)?album:Empty}", tuple, "xEmpty");
     test_tuple_format("x${(empty)?\"Literal\":Empty}", tuple, "Song Title");
+    test_tuple_format("x${(empty)?disc-number:Empty}", tuple, "xEmpty");
+
+    /* string truncation tests */
+    tuple.set_str(Tuple::Artist, "Artist Name");
+    test_tuple_format("${artist}", tuple, "Artist Name");
+    test_tuple_format("${artist#6}", tuple, "Artist...");
+    test_tuple_format("${artist#10}", tuple, "Artist Nam...");
+    test_tuple_format("${artist#11}", tuple, "Artist Name");
+    test_tuple_format("${artist#12}", tuple, "Artist Name");
+    test_tuple_format("${artist#-1}", tuple, "Artist Name");
+    test_tuple_format("${artist#abc}", tuple, "Artist Name");
+
+    /* string truncation with utf-8 strings */
+    tuple.set_str(Tuple::Artist, "Русское название");
+    test_tuple_format("${artist}", tuple, "Русское название");
+    test_tuple_format("${artist#7}", tuple, "Русское...");
+    test_tuple_format("${artist#15}", tuple, "Русское названи...");
+    test_tuple_format("${artist#16}", tuple, "Русское название");
+    test_tuple_format("${artist#17}", tuple, "Русское название");
+    test_tuple_format("${artist#-1}", tuple, "Русское название");
+    test_tuple_format("${artist#abc}", tuple, "Русское название");
 }
 
 static void test_ringbuf()
@@ -333,16 +355,22 @@ static void test_ringbuf()
     ring.alloc(7);
 
     for (int i = 0; i < 7; i++)
+    {
         assert(ring.push(nums[i]) == nums[i]);
+        assert(ring.nth_from_last(0) == nums[i]);
+    }
 
     for (int i = 0; i < 5; i++)
     {
         assert(ring.head() == nums[i]);
-        ring.pop();
+        assert(ring.pop() == nums[i]);
     }
 
     for (int i = 7; i < 10; i++)
+    {
         assert(ring.push(nums[i]) == nums[i]);
+        assert(ring.nth_from_last(0) == nums[i]);
+    }
 
     assert(ring.size() == 7);
     assert(ring.len() == 5);
@@ -352,7 +380,10 @@ static void test_ringbuf()
     ring.alloc(5);
 
     for (int i = 0; i < 5; i++)
+    {
         assert(ring[i] == nums[5 + i]);
+        assert(ring.nth_from_last(i) == nums[9 - i]);
+    }
 
     assert(ring.size() == 5);
     assert(ring.len() == 5);
@@ -378,13 +409,13 @@ static void test_ringbuf()
     for (int i = 0; i < 5; i++)
     {
         assert(ring.head() == nums[5 + i]);
-        ring.pop();
+        assert(ring.pop() == nums[5 + i]);
     }
 
     for (int i = 0; i < 5; i++)
     {
         assert(ring.head() == nums[4 - i]);
-        ring.pop();
+        assert(ring.pop() == nums[4 - i]);
     }
 
     ring.copy_in(&nums[5], 5);
@@ -393,13 +424,13 @@ static void test_ringbuf()
     for (int i = 0; i < 5; i++)
     {
         assert(ring.head() == nums[5 + i]);
-        ring.pop();
+        assert(ring.pop() == nums[5 + i]);
     }
 
     for (int i = 0; i < 5; i++)
     {
         assert(ring.head() == nums[i]);
-        ring.pop();
+        assert(ring.pop() == nums[i]);
     }
 
     ring.move_in(nums, 10);
@@ -447,6 +478,16 @@ static void test_ringbuf()
 
     ring.discard(5);
     assert(ring.len() == 5);
+
+    ring.fill_with("fill");
+
+    assert(ring.size() == 10);
+    assert(ring.len() == 10);
+    assert(ring.linear() == 10);
+    assert(ring.space() == 0);
+
+    for (int i = 0; i < 10; i++)
+        assert(ring[i] == String("fill"));
 
     ring.discard();
     assert(ring.len() == 0);

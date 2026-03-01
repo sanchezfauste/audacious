@@ -119,6 +119,9 @@ public:
         return *(const T *)RingBufBase::at(raw(i));
     }
 
+    /* zero-based: nth_from_last(0) is the last element */
+    T & nth_from_last(int i) { return (*this)[len() - 1 - i]; }
+
     void alloc(int size) { RingBufBase::alloc(raw(size)); }
     void destroy() { RingBufBase::destroy(aud::erase_func<T>()); }
 
@@ -158,10 +161,21 @@ public:
 
     T & head() { return *(T *)at(raw(0)); }
 
-    void pop()
+    T pop()
     {
+        T val = std::move(head());
         head().~T();
         remove(raw(1));
+        return val;
+    }
+
+    template<class... Args>
+    void fill_with(Args &&... args)
+    {
+        discard();
+        add(raw(size()));
+        for (int i = 0; i < len(); i++)
+            aud::construct<T>::make(at(raw(i)), std::forward<Args>(args)...);
     }
 
 private:

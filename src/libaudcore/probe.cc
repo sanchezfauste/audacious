@@ -28,6 +28,7 @@
 #include "plugin.h"
 #include "plugins-internal.h"
 #include "runtime.h"
+#include "vfs.h"
 
 bool open_input_file(const char * filename, const char * mode, InputPlugin * ip,
                      VFSFile & file, String * error)
@@ -93,6 +94,7 @@ EXPORT PluginHandle * aud_file_find_decoder(const char * filename, bool fast,
     StringBuf scheme = uri_get_scheme(filename);
     StringBuf ext = uri_get_extension(filename);
     Index<PluginHandle *> ext_matches;
+    Index<PluginHandle *> mime_matches;
 
     for (PluginHandle * plugin : list)
     {
@@ -139,17 +141,22 @@ EXPORT PluginHandle * aud_file_find_decoder(const char * filename, bool fast,
                 continue;
 
             if (input_plugin_has_key(plugin, InputKey::MIME, mime))
-            {
-                AUDINFO("Matched %s by MIME type %s.\n",
-                        aud_plugin_get_name(plugin), (const char *)mime);
-                return plugin;
-            }
+                mime_matches.append(plugin);
         }
+    }
+
+    if (mime_matches.len() == 1)
+    {
+        AUDINFO("Matched %s by MIME type %s.\n",
+                aud_plugin_get_name(mime_matches[0]), (const char *)mime);
+        return mime_matches[0];
     }
 
     file.set_limit_to_buffer(true);
 
-    for (PluginHandle * plugin : (ext_matches.len() ? ext_matches : list))
+    for (PluginHandle * plugin : (mime_matches.len()  ? mime_matches
+                                  : ext_matches.len() ? ext_matches
+                                                      : list))
     {
         if (!aud_plugin_get_enabled(plugin))
             continue;
@@ -178,7 +185,9 @@ EXPORT PluginHandle * aud_file_find_decoder(const char * filename, bool fast,
     }
 
     if (error)
-        *error = String(_("File format not recognized"));
+        *error = String(_("The file format could not be determined. The "
+                          "format may be unsupported, or a necessary plugin "
+                          "may not be installed/enabled."));
 
     AUDINFO("No plugins matched.\n");
     return nullptr;
@@ -202,12 +211,23 @@ EXPORT bool aud_file_read_tag(const char * filename, PluginHandle * decoder,
     {
         // cleanly replace existing tuple
         new_tuple.set_state(Tuple::Valid);
+
+        int64_t m = -1, c = -1;
+        if (VFSFile::get_file_timestamps(filename, &m, &c))
+        {
+            if (m > 0)
+                new_tuple.set_int64(Tuple::FileModified, m);
+            if (c > 0)
+                new_tuple.set_int64(Tuple::FileCreated, c);
+        }
+
         tuple = std::move(new_tuple);
         return true;
     }
 
     if (error)
-        *error = String(_("Error reading metadata"));
+        *error = String(_("The file could not be decoded. It may be invalid, "
+                          "corrupt, or in an unsupported format."));
 
     return false;
 }

@@ -1,0 +1,28 @@
+name: 'Install dependencies'
+description: 'Install dependencies based on the runner''s OS and build system'
+author: 'Audacious developers'
+
+inputs:
+  os:
+    description: 'The operating system to use (like ubuntu-24.04)'
+    required: True
+
+runs:
+  using: "composite"
+  steps:
+    - run: '$GITHUB_ACTION_PATH/install-dependencies.sh "${{ inputs.os }}"'
+      if: (!startsWith(inputs.os, 'windows'))
+      shell: bash
+
+    - uses: msys2/setup-msys2@v2
+      if: startsWith(inputs.os, 'windows')
+      with:
+        msystem: UCRT64
+        update: true
+        install: >-
+          mingw-w64-ucrt-x86_64-gcc
+          mingw-w64-ucrt-x86_64-gtk2
+          mingw-w64-ucrt-x86_64-meson
+          mingw-w64-ucrt-x86_64-pkg-config
+          mingw-w64-ucrt-x86_64-qt6-base
+          mingw-w64-ucrt-x86_64-qt6-svg

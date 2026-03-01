@@ -283,7 +283,7 @@ EXPORT void VFSFile::set_limit_to_buffer(bool limit)
 
 EXPORT Index<char> VFSFile::read_all()
 {
-    constexpr int maxbuf = 16777216;
+    constexpr int maxbuf = 256 * 1024 * 1024;
     constexpr int pagesize = 4096;
 
     Index<char> buf;
@@ -445,4 +445,16 @@ EXPORT Index<const char *> VFSFile::supported_uri_schemes()
     schemes.append(nullptr);
 
     return schemes;
+}
+
+EXPORT bool VFSFile::get_file_timestamps(const char * filename, int64_t * mtime,
+                                         int64_t * birthtime)
+{
+    // Check if it's a local file
+    StringBuf scheme = uri_get_scheme(filename);
+    if (!scheme || strcmp(scheme, "file") != 0)
+        return false;
+
+    // Use the static local_transport instance
+    return local_transport.get_file_timestamps(filename, mtime, birthtime);
 }

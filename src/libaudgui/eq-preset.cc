@@ -26,6 +26,7 @@
 #include <libaudcore/interface.h>
 #include <libaudcore/runtime.h>
 
+#include "gtk-compat.h"
 #include "internal.h"
 #include "libaudgui.h"
 #include "libaudgui-gtk.h"
@@ -217,14 +218,14 @@ static void revert_changes ()
     gtk_widget_set_sensitive (revert, false);
 }
 
-static void do_save_file (void)
+static void do_save_file ()
 {
     auto preset = find_one_selected ();
     if (preset)
         eq_preset_save_file (* preset);
 }
 
-static void do_save_eqf (void)
+static void do_save_eqf ()
 {
     auto preset = find_one_selected ();
     if (preset)
@@ -280,22 +281,23 @@ static GtkWidget * create_eq_preset_window ()
 
     GtkWidget * window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title ((GtkWindow *) window, _("Equalizer Presets"));
+    gtk_window_set_role ((GtkWindow *) window, "equalizer-presets");
     gtk_window_set_type_hint ((GtkWindow *) window, GDK_WINDOW_TYPE_HINT_DIALOG);
     gtk_window_set_default_size ((GtkWindow *) window, 3 * dpi, 3 * dpi);
     audgui_destroy_on_escape (window);
 
     g_signal_connect (window, "destroy", (GCallback) cleanup_eq_preset_window, nullptr);
 
-    GtkWidget * outer = gtk_vbox_new (false, 0);
+    GtkWidget * outer = audgui_vbox_new (0);
     gtk_container_add ((GtkContainer *) window, outer);
 
     gtk_box_pack_start ((GtkBox *) outer, create_menu_bar (), false, false, 0);
 
-    GtkWidget * vbox = gtk_vbox_new (false, 6);
+    GtkWidget * vbox = audgui_vbox_new (6);
     gtk_container_set_border_width ((GtkContainer *) vbox, 6);
     gtk_box_pack_start ((GtkBox *) outer, vbox, true, true, 0);
 
-    GtkWidget * hbox = gtk_hbox_new (false, 6);
+    GtkWidget * hbox = audgui_hbox_new (6);
     gtk_box_pack_start ((GtkBox *) vbox, hbox, false, false, 0);
 
     entry = gtk_entry_new ();
@@ -320,7 +322,7 @@ static GtkWidget * create_eq_preset_window ()
     audgui_list_add_column (list, nullptr, 0, G_TYPE_STRING, -1);
     gtk_container_add ((GtkContainer *) scrolled, list);
 
-    GtkWidget * hbox2 = gtk_hbox_new (false, 6);
+    GtkWidget * hbox2 = audgui_hbox_new (6);
     gtk_box_pack_start ((GtkBox *) vbox, hbox2, false, false, 0);
 
     GtkWidget * remove = audgui_button_new (_("Delete Selected"), "edit-delete",

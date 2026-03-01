@@ -39,8 +39,6 @@ static const char * const audgui_defaults[] = {
     "close_dialog_add", "FALSE",
     "close_dialog_open", "TRUE",
     "close_jtf_dialog", "TRUE",
-    "record", "FALSE",
-    "remember_jtf_entry", "TRUE",
     nullptr
 };
 
@@ -134,7 +132,7 @@ void audgui_hide_unique_window (int id)
 #ifdef _WIN32
 /* On Windows, the default icon sizes are fixed.
  * Adjust them for varying screen resolutions. */
-void adjust_icon_sizes (void)
+void adjust_icon_sizes ()
 {
     struct Mapping {
         GtkIconSize size;
@@ -186,8 +184,10 @@ static void load_fallback_icon (const char * icon, int size)
 
     if (pixbuf)
     {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         gtk_icon_theme_add_builtin_icon (icon, size, pixbuf);
         g_object_unref (pixbuf);
+G_GNUC_END_IGNORE_DEPRECATIONS
     }
 }
 
@@ -197,7 +197,6 @@ static void load_fallback_icons ()
         "application-exit",
         "applications-graphics",
         "applications-internet",
-        "applications-system",
         "appointment-new",
         "audacious",
         "audio-card",
@@ -245,6 +244,7 @@ static void load_fallback_icons ()
         "media-skip-backward",
         "media-skip-forward",
         "multimedia-volume-control",
+        "preferences-other",
         "preferences-system",
         "process-stop",
         "system-run",
@@ -288,11 +288,11 @@ static void load_fallback_icons ()
     static const char * const category_icons[] = {
         "applications-graphics",
         "applications-internet",
-        "applications-system",
         "audacious", /* for window icons */
-        "audio-volume-medium",
         "audio-x-generic", /* also used for fallback album art */
         "dialog-information",
+        "multimedia-volume-control",
+        "preferences-other",
         "preferences-system"
     };
 
@@ -308,7 +308,7 @@ static void load_fallback_icons ()
 
     GtkIconSize icon_size;
     GtkSettings * settings = gtk_settings_get_default ();
-    g_object_get (settings, "gtk-toolbar-icon-size", & icon_size, NULL);
+    g_object_get (settings, "gtk-toolbar-icon-size", & icon_size, nullptr);
 
     int toolbar_size = get_icon_size (icon_size);
     for (const char * icon : toolbar_icons)
@@ -342,6 +342,18 @@ EXPORT void audgui_init ()
     if (init_count ++)
         return;
 
+#if defined(GDK_WINDOWING_WAYLAND) && defined(GDK_WINDOWING_X11)
+    // Use X11/XWayland by default, but allow to overwrite it.
+    // Especially the Winamp interface is not usable yet on Wayland
+    // due to limitations regarding application-side window positioning.
+    auto backend = g_getenv ("GDK_BACKEND");
+    if (! backend && g_getenv ("DISPLAY"))
+        g_setenv ("GDK_BACKEND", "x11", false);
+    else if (g_strcmp0 (backend, "x11"))
+        AUDWARN ("X11/XWayland was not detected. This is unsupported, "
+                 "please do not report bugs.\n");
+#endif
+
     static char app_name[] = "audacious";
     static char * app_args[] = {app_name, nullptr};
 
@@ -363,6 +375,10 @@ EXPORT void audgui_init ()
     hook_associate ("playlist set playing", playlist_set_playing_cb, nullptr);
     hook_associate ("playlist position", playlist_position_cb, nullptr);
 
+#if defined(USE_GTK3) && defined(G_OS_UNIX)
+    portal_init ();
+#endif
+
 #ifndef _WIN32
     gtk_window_set_default_icon_name ("audacious");
 #endif
@@ -377,6 +393,10 @@ EXPORT void audgui_cleanup ()
     hook_dissociate ("playlist position", playlist_position_cb);
 
     status_cleanup ();
+
+#if defined(USE_GTK3) && defined(G_OS_UNIX)
+    portal_cleanup ();
+#endif
 
     for (int id = 0; id < AUDGUI_NUM_UNIQUE_WINDOWS; id ++)
         audgui_hide_unique_window (id);

@@ -1,0 +1,22 @@
+name: 'Run action'
+description: 'Run a build action based on the runner''s OS and build system'
+author: 'Audacious developers'
+
+inputs:
+  action:
+    description: 'The build action to run (configure, build, test or install)'
+    required: True
+  os:
+    description: 'The operating system to use (like ubuntu-24.04)'
+    required: True
+
+runs:
+  using: "composite"
+  steps:
+    - run: '$GITHUB_ACTION_PATH/run-action.sh "${{ inputs.action }}" "${{ inputs.os }}"'
+      if: (!startsWith(inputs.os, 'windows'))
+      shell: bash
+
+    - run: '$GITHUB_ACTION_PATH/run-action.sh "${{ inputs.action }}" "${{ inputs.os }}"'
+      if: startsWith(inputs.os, 'windows')
+      shell: msys2 {0}

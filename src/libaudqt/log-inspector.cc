@@ -65,19 +65,19 @@ public:
     void cleanup();
 
 protected:
-    int rowCount(const QModelIndex & parent = QModelIndex()) const
+    int rowCount(const QModelIndex & parent = QModelIndex()) const override
     {
         return parent.isValid() ? 0 : m_entries.len();
     }
 
-    int columnCount(const QModelIndex & parent = QModelIndex()) const
+    int columnCount(const QModelIndex & parent = QModelIndex()) const override
     {
         return LogEntryColumn::Count;
     }
 
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const override;
 
 private:
     RingBuf<LogEntry> m_entries;
@@ -209,6 +209,7 @@ private:
 LogEntryInspector::LogEntryInspector(QWidget * parent) : QDialog(parent)
 {
     setWindowTitle(_("Log Inspector"));
+    setWindowRole("log-inspector");
     setContentsMargins(margins.TwoPt);
 
     auto view = new QTreeView(this);
@@ -235,7 +236,7 @@ LogEntryInspector::LogEntryInspector(QWidget * parent) : QDialog(parent)
 
     auto btn1 = btnbox->addButton(translate_str(N_("Cl_ear")),
                                   QDialogButtonBox::ActionRole);
-    btn1->setIcon(audqt::get_icon("edit-clear-all"));
+    btn1->setIcon(QIcon::fromTheme("edit-clear-all"));
     btn1->setAutoDefault(false);
     QObject::connect(btn1, &QPushButton::clicked,
                      []() { s_model.get()->cleanup(); });

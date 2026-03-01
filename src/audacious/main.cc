@@ -43,7 +43,9 @@
 #endif
 
 #include "main.h"
+#ifdef _WIN32
 #include "util.h"
+#endif
 
 static struct
 {
@@ -72,7 +74,8 @@ static const struct
     {"help", 'h', &options.help, N_("Show command-line help")},
     {"version", 'v', &options.version, N_("Show version")},
     {"play", 'p', &options.play, N_("Start playback")},
-    {"pause", 'u', &options.pause, N_("Pause playback")},
+    {"pause", 'u', &options.pause,
+     N_("Pause playback, resume if already paused")},
     {"play-pause", 't', &options.play_pause,
      N_("Pause if playing, play otherwise")},
     {"stop", 's', &options.stop, N_("Stop playback")},
@@ -219,8 +222,6 @@ static void do_remote()
     GDBusConnection * bus = nullptr;
     ObjAudacious * obj = nullptr;
     GError * error = nullptr;
-
-    g_type_init();
 
     /* check whether the selected instance is running */
     if (dbus_server_init())

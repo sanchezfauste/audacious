@@ -22,10 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <mutex>
 #include <new>
 
 #include "objects.h"
-#include "threads.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -150,6 +150,11 @@ EXPORT void StringBuf::resize(int len)
             m_len = header->len = (len < 0) ? max_len : len;
             need_alloc = false;
         }
+        else if (!header->next)
+        {
+            /* not enough space and already at top of stack */
+            throw std::bad_alloc();
+        }
     }
 
     if (need_alloc)
@@ -183,7 +188,7 @@ EXPORT void StringBuf::resize(int len)
             if (header->prev)
                 header->prev->next = header->next;
 
-            /* we know header != stack->top */
+            /* header->next is never null here */
             header->next->prev = header->prev;
         }
 
@@ -214,11 +219,6 @@ EXPORT StringBuf::~StringBuf()
     }
 }
 
-EXPORT void StringBuf::steal(StringBuf && other)
-{
-    (*this = std::move(other)).settle();
-}
-
 EXPORT StringBuf && StringBuf::settle()
 {
     if (m_data)
@@ -243,16 +243,6 @@ EXPORT StringBuf && StringBuf::settle()
     }
 
     return std::move(*this);
-}
-
-EXPORT void StringBuf::combine(StringBuf && other)
-{
-    if (!other.m_data)
-        return;
-
-    insert(m_len, other.m_data, other.m_len);
-    other = StringBuf();
-    settle();
 }
 
 EXPORT char * StringBuf::insert(int pos, const char * s, int len)

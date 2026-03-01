@@ -36,6 +36,7 @@ static QDialog * buildRenameDialog(Playlist playlist)
     auto dialog = new QInputDialog;
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setWindowTitle(_("Rename Playlist"));
+    dialog->setWindowRole("rename-playlist");
     dialog->setLabelText(_("What would you like to call this playlist?"));
     dialog->setOkButtonText(translate_str(N_("_Rename")));
     dialog->setCancelButtonText(translate_str(N_("_Cancel")));
@@ -60,17 +61,23 @@ static QDialog * buildDeleteDialog(Playlist playlist)
 
     dialog->setIcon(QMessageBox::Question);
     dialog->setWindowTitle(_("Remove Playlist"));
+    dialog->setWindowRole("remove-playlist");
     dialog->setText(
         (const char *)str_printf(_("Do you want to permanently remove “%s”?"),
                                  (const char *)playlist.get_title()));
     dialog->setCheckBox(skip_prompt);
     dialog->addButton(remove, QMessageBox::AcceptRole);
     dialog->addButton(cancel, QMessageBox::RejectRole);
+    dialog->setDefaultButton(remove);
 
-    remove->setIcon(audqt::get_icon("edit-delete"));
-    cancel->setIcon(audqt::get_icon("process-stop"));
+    remove->setIcon(QIcon::fromTheme("edit-delete"));
+    cancel->setIcon(QIcon::fromTheme("process-stop"));
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+    QObject::connect(skip_prompt, &QCheckBox::checkStateChanged, [](Qt::CheckState state) {
+#else
     QObject::connect(skip_prompt, &QCheckBox::stateChanged, [](int state) {
+#endif
         aud_set_bool("audgui", "no_confirm_playlist_delete",
                      (state == Qt::Checked));
     });

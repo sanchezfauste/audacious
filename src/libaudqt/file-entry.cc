@@ -37,7 +37,7 @@ public:
               QFileDialog::AcceptMode accept_mode)
         : QLineEdit(parent), m_title(title), m_file_mode(file_mode),
           m_accept_mode(accept_mode),
-          m_action(get_icon("document-open"), _("Browse"), nullptr)
+          m_action(QIcon::fromTheme("document-open"), _("Browse"), nullptr)
     {
         addAction(&m_action, TrailingPosition);
         connect(&m_action, &QAction::triggered, this, &FileEntry::show_dialog);
@@ -61,6 +61,7 @@ QFileDialog * FileEntry::create_dialog()
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setFileMode(m_file_mode);
     dialog->setAcceptMode(m_accept_mode);
+    dialog->setWindowRole("file-dialog");
 
     String uri = file_entry_get_uri(this);
     if (uri)

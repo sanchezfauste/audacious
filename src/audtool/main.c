@@ -94,6 +94,7 @@ const struct commandhandler handlers[] =
     {"playlist-stop-after-toggle", playlist_stop_after_toggle, "toggle if stopping after current song", 0},
     {"playlist-stop-after-each-status", playlist_stop_after_each_status, "query if stopping after each song", 0},
     {"playlist-stop-after-each-toggle", playlist_stop_after_each_toggle, "toggle if stopping after each song", 0},
+    {"playlist-save", playlist_save, "save playlist to given file path", 1},
 
     {"<sep>", NULL, "More playlist commands", 0},
     {"number-of-playlists", number_of_playlists, "print number of playlists", 0},
@@ -225,8 +226,6 @@ int main (int argc, char * * argv)
     int i, j, k = 0;
 
     setlocale (LC_CTYPE, "");
-
-    g_type_init();
 
 #ifdef _WIN32
     g_set_print_handler (print_utf8);

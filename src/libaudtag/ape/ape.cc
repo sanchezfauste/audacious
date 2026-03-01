@@ -255,12 +255,16 @@ bool APETagModule::read_tag (VFSFile & handle, Tuple & tuple, Index<char> * imag
             tuple.set_str (Tuple::Title, pair.value.begin ());
         else if (! strcmp_nocase (pair.key, "Album"))
             tuple.set_str (Tuple::Album, pair.value.begin ());
+        else if (! strcmp_nocase (pair.key, "Album Artist"))
+            tuple.set_str (Tuple::AlbumArtist, pair.value.begin ());
         else if (! strcmp_nocase (pair.key, "Comment"))
             tuple.set_str (Tuple::Comment, pair.value.begin ());
         else if (! strcmp_nocase (pair.key, "Genre"))
             tuple.set_str (Tuple::Genre, pair.value.begin ());
         else if (! strcmp_nocase (pair.key, "Track"))
             tuple.set_int (Tuple::Track, atoi (pair.value.begin ()));
+        else if (! strcmp_nocase (pair.key, "Disc"))
+            tuple.set_int (Tuple::Disc, atoi (pair.value.begin ()));
         else if (! strcmp_nocase (pair.key, "Year"))
             tuple.set_int (Tuple::Year, atoi (pair.value.begin ()));
         else if (! strcmp_nocase (pair.key, "REPLAYGAIN_TRACK_GAIN"))
@@ -382,17 +386,20 @@ bool APETagModule::write_tag (VFSFile & handle, const Tuple & tuple)
     if (! write_string_item (tuple, Tuple::Artist, handle, "Artist", & length, & items) ||
      ! write_string_item (tuple, Tuple::Title, handle, "Title", & length, & items) ||
      ! write_string_item (tuple, Tuple::Album, handle, "Album", & length, & items) ||
+     ! write_string_item (tuple, Tuple::AlbumArtist, handle, "Album Artist", & length, & items) ||
      ! write_string_item (tuple, Tuple::Comment, handle, "Comment", & length, & items) ||
      ! write_string_item (tuple, Tuple::Genre, handle, "Genre", & length, & items) ||
      ! write_integer_item (tuple, Tuple::Track, handle, "Track", & length, & items) ||
+     ! write_integer_item (tuple, Tuple::Disc, handle, "Disc", & length, & items) ||
      ! write_integer_item (tuple, Tuple::Year, handle, "Year", & length, & items))
         return false;
 
     for (const ValuePair & pair : list)
     {
         if (! strcmp_nocase (pair.key, "Artist") || ! strcmp_nocase (pair.key, "Title") ||
-         ! strcmp_nocase (pair.key, "Album") || ! strcmp_nocase (pair.key, "Comment") ||
-         ! strcmp_nocase (pair.key, "Genre") || ! strcmp_nocase (pair.key, "Track") ||
+         ! strcmp_nocase (pair.key, "Album") || ! strcmp_nocase (pair.key, "Album Artist") ||
+         ! strcmp_nocase (pair.key, "Comment") || ! strcmp_nocase (pair.key, "Genre") ||
+         ! strcmp_nocase (pair.key, "Track") || ! strcmp_nocase (pair.key, "Disc") ||
          ! strcmp_nocase (pair.key, "Year"))
             continue;
 

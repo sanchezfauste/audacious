@@ -1,0 +1,1628 @@
+# Romanian translation for Audacious
+# Copyright (C) Audacious translators
+# This file is distributed under the same license as the Audacious package.
+#
+# Translators:
+# Cătălin, 2024
+# 3d5ab56b1b83fefceeab671c39a98a6d_999ae54, 2014
+# 3d5ab56b1b83fefceeab671c39a98a6d_999ae54, 2014,2016
+# Daniel <danny3@tutanota.com>, 2022
+# Emil Ungurean <emil.ungurean@gmail.com>, 2014
+# Mihai Michael, 2022-2023
+# xyz32 <oanaradu32@yahoo.com>, 2013
+# titus <titus0818@gmail.com>, 2022
+# Warui-chan <>, 2012
+# Warui-chan <>, 2012
+# xyz32 <oanaradu32@yahoo.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: Audacious\n"
+"Report-Msgid-Bugs-To: https://github.com/audacious-media-player/audacious/"
+"issues\n"
+"POT-Creation-Date: 2025-07-14 01:26+0200\n"
+"PO-Revision-Date: 2011-10-10 15:11+0000\n"
+"Last-Translator: Cătălin, 2024\n"
+"Language-Team: Romanian (http://app.transifex.com/audacious/audacious/"
+"language/ro/)\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
+"2:1));\n"
+
+#: src/audacious/main.cc:72
+msgid "Show command-line help"
+msgstr "Arată ajutor în linia de comandă"
+
+#: src/audacious/main.cc:73
+msgid "Show version"
+msgstr "Arată versiunea"
+
+#: src/audacious/main.cc:74
+msgid "Start playback"
+msgstr "Redă"
+
+#: src/audacious/main.cc:75
+msgid "Pause playback"
+msgstr "Pauză"
+
+#: src/audacious/main.cc:77
+msgid "Pause if playing, play otherwise"
+msgstr "Pauză dacă se redă, redare altfel"
+
+#: src/audacious/main.cc:78
+msgid "Stop playback"
+msgstr "Oprește redarea"
+
+#: src/audacious/main.cc:79
+msgid "Skip to previous song"
+msgstr "Sari la melodia anterioară"
+
+#: src/audacious/main.cc:80
+msgid "Skip to next song"
+msgstr "Sari la melodia următoare"
+
+#: src/audacious/main.cc:81
+msgid "Add files to the playlist"
+msgstr "Adaugă fișiere la lista de redare"
+
+#: src/audacious/main.cc:83
+msgid "Add files to a temporary playlist"
+msgstr "Adaugă fișiere la o listă de redare temporară"
+
+#: src/audacious/main.cc:84
+msgid "Display the main window"
+msgstr "Arată fereastra principală"
+
+#: src/audacious/main.cc:86
+msgid "Display the jump-to-song window"
+msgstr "Arată fereastra de sărit la o anumită melodie"
+
+#: src/audacious/main.cc:88
+msgid "Start without a graphical interface"
+msgstr "Pornește fără o interfață grafică"
+
+#: src/audacious/main.cc:90
+msgid "Quit on playback stop"
+msgstr "Închidere la oprirea redării"
+
+#: src/audacious/main.cc:92
+msgid "Print debugging messages (may be used twice)"
+msgstr "Printează mesaje de depanare (se poate folosi de doua ori)"
+
+#: src/audacious/main.cc:94
+msgid "Run in GTK mode"
+msgstr "Rulează in mod GTK"
+
+#: src/audacious/main.cc:95
+msgid "Run in Qt mode"
+msgstr "Rulează în modul Qt"
+
+#: src/audacious/main.cc:152
+#, c-format
+msgid "Unknown option: %s\n"
+msgstr "Opțiune necunoscută: %s\n"
+
+#: src/audacious/main.cc:174
+#, c-format
+msgid "Unknown option: -%c\n"
+msgstr "Opțiune necunoscută: %c\n"
+
+#: src/audacious/main.cc:204
+msgid ""
+"Usage: audacious [OPTION] ... [FILE] ...\n"
+"\n"
+msgstr ""
+"Utilizare: audacious [OPȚIUNE] ... [FIȘIER] ...\n"
+"\n"
+
+#: src/audacious/main.cc:206
+msgid "Select instance to run/control"
+msgstr "Selectează instanța principală"
+
+#: src/audacious/main.cc:391 src/libaudqt/audqt.cc:165
+msgid "Audacious"
+msgstr "Audacious"
+
+#: src/libaudcore/adder.cc:96
+#, c-format
+msgid "%d file found"
+msgid_plural "%d files found"
+msgstr[0] "%d fisiere gasite"
+msgstr[1] "%d fisiere gasite"
+msgstr[2] "%d fișiere găsite"
+
+#: src/libaudcore/adder.cc:320 src/libaudcore/adder.cc:404
+#, c-format
+msgid ""
+"Error reading %s:\n"
+"%s"
+msgstr ""
+"A apărut o eroare la citirea %s:\n"
+"%s"
+
+#: src/libaudcore/adder.cc:456
+msgid "No files found."
+msgstr "Nu s-au găsit fișierele."
+
+#: src/libaudcore/adder.cc:478 src/libaudcore/playlist.cc:81
+msgid "New Playlist"
+msgstr "Listă de redare nouă"
+
+#: src/libaudcore/audstrings.cc:664 src/libaudcore/tuple.cc:534
+msgid "Standard input"
+msgstr "Intrare standard"
+
+#: src/libaudcore/audstrings.cc:666
+#, c-format
+msgid "Audio CD, track %s"
+msgstr "Audio CD, pista %s"
+
+#: src/libaudcore/audstrings.cc:670 src/libaudcore/tuple.cc:510
+msgid "(character encoding error)"
+msgstr "(eroare de codare a caracterelor)"
+
+#: src/libaudcore/drct.cc:96
+msgid ""
+"Stream recording must be configured in Audio Settings before it can be used."
+msgstr ""
+"Înregistrarea strem-urilor trebuie configurata în Setările Audio înainte de "
+"a putea fi folosită/"
+
+#: src/libaudcore/output.cc:289
+msgid "Error opening output stream"
+msgstr "Eroare la deschiderea fluxului de ieșire"
+
+#: src/libaudcore/output.cc:341
+msgid "Error recording output stream"
+msgstr "A apărut o eroare la înregistrarea stream-ului"
+
+#: src/libaudcore/playback.cc:379
+#, c-format
+msgid ""
+"Error playing %s:\n"
+"%s"
+msgstr ""
+"A apărut o eroare în timpul redării %s:\n"
+"%s"
+
+#: src/libaudcore/playback.cc:510
+msgid "Invalid audio format"
+msgstr "Format audio invalid"
+
+#: src/libaudcore/playlist.cc:82
+msgid "Now Playing"
+msgstr "Se redă acum"
+
+#: src/libaudcore/playlist-files.cc:73 src/libaudcore/playlist-files.cc:153
+#: src/libaudgui/infowin.cc:538 src/libaudqt/infowin-qt.cc:183
+#, c-format
+msgid ""
+"Error opening %s:\n"
+"%s"
+msgstr ""
+"Eroare la deschiderea %s:\n"
+"%s"
+
+#: src/libaudcore/playlist-files.cc:87 src/libaudqt/eq-preset-qt.cc:283
+#, c-format
+msgid "Error loading %s."
+msgstr "Eroare la încărcarea %s."
+
+#: src/libaudcore/playlist-files.cc:89
+#, c-format
+msgid "Cannot load %s: unsupported file name extension."
+msgstr "Nu se poate încărca %s: extensia fisierului nu este suportată."
+
+#: src/libaudcore/playlist-files.cc:161 src/libaudqt/eq-preset-qt.cc:319
+#, c-format
+msgid "Error saving %s."
+msgstr "A apărut o eroare în timpul salvării %s."
+
+#: src/libaudcore/playlist-files.cc:167
+#, c-format
+msgid "Cannot save %s: unsupported file name extension."
+msgstr "Nu se poate salva %s: extensia fisierului nu este suportată."
+
+#: src/libaudcore/probe.cc:54
+msgid "Error loading plugin"
+msgstr "Eroare încărcare plugin"
+
+#: src/libaudcore/probe.cc:179
+msgid "Seek error"
+msgstr "Eroare căutare"
+
+#: src/libaudcore/probe.cc:187
+msgid ""
+"The file format could not be determined. The format may be unsupported, or a "
+"necessary plugin may not be installed/enabled."
+msgstr ""
+"Formatul fișierului nu poate fi determinat. Acest format ar putea fi "
+"necunoscut sau un supliment nu este instalat/activat."
+
+#: src/libaudcore/probe.cc:218
+msgid ""
+"The file could not be decoded. It may be invalid, corrupt, or in an "
+"unsupported format."
+msgstr ""
+"Fișierul nu a putut fi decodat. Ar putea fi invalid, corupt sau într-un "
+"format necunoscut."
+
+#: src/libaudcore/tuple.cc:568
+msgid "Mono"
+msgstr "Mono"
+
+#: src/libaudcore/tuple.cc:570
+msgid "Stereo"
+msgstr "Stereo"
+
+#: src/libaudcore/tuple.cc:573
+#, c-format
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d canal"
+msgstr[1] "%d canale"
+msgstr[2] "%d canale"
+
+#: src/libaudcore/tuple.cc:791
+msgid "Audio CD"
+msgstr "Audio CD"
+
+#: src/libaudcore/tuple.cc:875
+#, c-format
+msgid "Track %d"
+msgstr "Pista %d"
+
+#: src/libaudcore/tuple.cc:881
+msgid "(unknown title)"
+msgstr "(titlu necunoscut)"
+
+#: src/libaudcore/vfs.cc:79
+msgid "Unknown URI scheme"
+msgstr "Schemă URI necunoscută"
+
+#: src/libaudcore/vfs_local.cc:86 src/libaudcore/vfs_local.cc:330
+#: src/libaudcore/vfs_local.cc:386
+msgid "Invalid file name"
+msgstr "Nume fișier invalid"
+
+#: src/libaudcore/vfs_local.cc:134
+msgid "Invalid access mode"
+msgstr "Mod acces invalid"
+
+#: src/libaudgui/about.cc:37 src/libaudqt/about-qt.cc:37
+msgid "Credits"
+msgstr "Credite"
+
+#: src/libaudgui/about.cc:37 src/libaudqt/about-qt.cc:37
+msgid "License"
+msgstr "Licență"
+
+#: src/libaudgui/about.cc:73 src/libaudqt/about-qt.cc:64
+msgid "About Audacious"
+msgstr "Despre Audacious"
+
+#: src/libaudgui/confirm.cc:36 src/libaudgui/jump-to-time.cc:48
+#: src/libaudgui/playlists.cc:93 src/libaudgui/playlists.cc:190
+#: src/libaudgui/plugin-prefs.cc:162 src/libaudgui/url-opener.cc:105
+#: src/libaudqt/playlist-management.cc:42
+#: src/libaudqt/playlist-management.cc:60 src/libaudqt/prefs-plugin.cc:141
+#: src/libaudqt/url-opener-qt.cc:81
+msgid "_Cancel"
+msgstr "_Anulare"
+
+#: src/libaudgui/confirm.cc:51 src/libaudqt/playlist-management.cc:58
+msgid "_Don’t ask again"
+msgstr "_Nu mai întreba"
+
+#: src/libaudgui/confirm.cc:70 src/libaudqt/playlist-management.cc:66
+#, c-format
+msgid "Do you want to permanently remove “%s”?"
+msgstr "Eşti sigur că vrei să elimini definitiv \"%s\"?"
+
+#: src/libaudgui/confirm.cc:73 src/libaudqt/playlist-management.cc:59
+msgid "_Remove"
+msgstr "_Elimină"
+
+#: src/libaudgui/confirm.cc:76 src/libaudqt/playlist-management.cc:63
+msgid "Remove Playlist"
+msgstr "Elimină Lista de redare"
+
+#: src/libaudgui/confirm.cc:95 src/libaudqt/playlist-management.cc:40
+msgid "What would you like to call this playlist?"
+msgstr "Cum vrei să denumești această listă de redare?"
+
+#: src/libaudgui/confirm.cc:96 src/libaudqt/playlist-management.cc:41
+msgid "_Rename"
+msgstr "_Redenumeşte"
+
+#: src/libaudgui/confirm.cc:97 src/libaudqt/playlist-management.cc:38
+msgid "Rename Playlist"
+msgstr "Redenumeste Lista de redare"
+
+#: src/libaudgui/eq-preset.cc:154
+msgid "Please select one preset to export."
+msgstr "Vă rugam selectați o preetare pentru export."
+
+#: src/libaudgui/eq-preset.cc:257 src/libaudgui/eq-preset.cc:262
+msgid "Preset File ..."
+msgstr "Fișier prestabiliri ..."
+
+#: src/libaudgui/eq-preset.cc:258 src/libaudgui/eq-preset.cc:263
+msgid "EQF File ..."
+msgstr "Fișier EQF ..."
+
+#: src/libaudgui/eq-preset.cc:267 src/libaudqt/eq-preset-qt.cc:339
+#: src/libaudqt/fileopener.cc:110
+msgid "Import"
+msgstr "Import"
+
+#: src/libaudgui/eq-preset.cc:268 src/libaudqt/eq-preset-qt.cc:342
+#: src/libaudqt/fileopener.cc:110
+msgid "Export"
+msgstr "Export"
+
+#: src/libaudgui/eq-preset.cc:283 src/libaudqt/eq-preset-qt.cc:405
+msgid "Equalizer Presets"
+msgstr "Prestabiliri egalizator"
+
+#: src/libaudgui/eq-preset.cc:306 src/libaudqt/eq-preset-qt.cc:330
+msgid "Save Preset"
+msgstr "Salvează prestabilirea"
+
+#: src/libaudgui/eq-preset.cc:328
+msgid "Delete Selected"
+msgstr "Șterge selecția"
+
+#: src/libaudgui/eq-preset.cc:332
+msgid "Revert Changes"
+msgstr "Anulați modificările"
+
+#: src/libaudgui/equalizer.cc:46 src/libaudqt/equalizer-qt.cc:120
+msgid "_Enable"
+msgstr "_Permite"
+
+#: src/libaudgui/equalizer.cc:128 src/libaudqt/equalizer-qt.cc:123
+msgid "31 Hz"
+msgstr "31 Hz"
+
+#: src/libaudgui/equalizer.cc:128 src/libaudqt/equalizer-qt.cc:123
+msgid "63 Hz"
+msgstr "63 Hz"
+
+#: src/libaudgui/equalizer.cc:129 src/libaudqt/equalizer-qt.cc:123
+msgid "125 Hz"
+msgstr "125 Hz"
+
+#: src/libaudgui/equalizer.cc:129 src/libaudqt/equalizer-qt.cc:123
+msgid "250 Hz"
+msgstr "250 Hz"
+
+#: src/libaudgui/equalizer.cc:129 src/libaudqt/equalizer-qt.cc:123
+msgid "500 Hz"
+msgstr "500 Hz"
+
+#: src/libaudgui/equalizer.cc:129 src/libaudqt/equalizer-qt.cc:124
+msgid "1 kHz"
+msgstr "1 kHz"
+
+#: src/libaudgui/equalizer.cc:129 src/libaudqt/equalizer-qt.cc:124
+msgid "2 kHz"
+msgstr "2 kHz"
+
+#: src/libaudgui/equalizer.cc:130 src/libaudqt/equalizer-qt.cc:124
+msgid "4 kHz"
+msgstr "4 kHz"
+
+#: src/libaudgui/equalizer.cc:130 src/libaudqt/equalizer-qt.cc:124
+msgid "8 kHz"
+msgstr "8 kHz"
+
+#: src/libaudgui/equalizer.cc:130 src/libaudqt/equalizer-qt.cc:124
+msgid "16 kHz"
+msgstr "16 kHz"
+
+#: src/libaudgui/equalizer.cc:133 src/libaudqt/equalizer-qt.cc:210
+msgid "Equalizer"
+msgstr "Egalizator"
+
+#: src/libaudgui/equalizer.cc:148 src/libaudqt/equalizer-qt.cc:144
+msgid "Presets ..."
+msgstr "Presetări ..."
+
+#: src/libaudgui/equalizer.cc:152 src/libaudqt/equalizer-qt.cc:143
+msgid "Reset to Zero"
+msgstr "Resetează la zero"
+
+#: src/libaudgui/equalizer.cc:159 src/libaudqt/equalizer-qt.cc:129
+msgid "Preamp"
+msgstr "Preamplificator"
+
+#: src/libaudgui/file-opener.cc:79 src/libaudqt/fileopener.cc:105
+msgid "Open Files"
+msgstr "Deschide Fișiere"
+
+#: src/libaudgui/file-opener.cc:80 src/libaudgui/url-opener.cc:68
+#: src/libaudqt/url-opener-qt.cc:48
+msgid "_Open"
+msgstr "_Deschide"
+
+#: src/libaudgui/file-opener.cc:82
+msgid "Close _dialog on open"
+msgstr "Închide _dialogul la deschidere"
+
+#: src/libaudgui/file-opener.cc:87 src/libaudqt/fileopener.cc:105
+msgid "Add Files"
+msgstr "Adaugă Fișiere"
+
+#: src/libaudgui/file-opener.cc:88 src/libaudgui/url-opener.cc:74
+#: src/libaudqt/url-opener-qt.cc:54
+msgid "_Add"
+msgstr "_Adaugă"
+
+#: src/libaudgui/file-opener.cc:90
+msgid "Close _dialog on add"
+msgstr "Închide _dialogul la adăugare"
+
+#: src/libaudgui/file-opener.cc:139 src/libaudgui/infowin.cc:443
+#: src/libaudgui/jump-to-track.cc:322 src/libaudgui/plugin-prefs.cc:168
+#: src/libaudgui/prefs-window.cc:939 src/libaudgui/queue-manager.cc:195
+#: src/libaudgui/util.cc:365 src/libaudqt/audqt.cc:344
+#: src/libaudqt/infowin-qt.cc:93 src/libaudqt/log-inspector.cc:245
+#: src/libaudqt/prefs-plugin.cc:152 src/libaudqt/prefs-window-qt.cc:696
+#: src/libaudqt/song-window-qt.cc:376
+msgid "_Close"
+msgstr "_Închidere"
+
+#: src/libaudgui/infopopup.cc:216 src/libaudgui/infowin.cc:402
+#: src/libaudgui/prefs-window.cc:105 src/libaudqt/infopopup-qt.cc:95
+#: src/libaudqt/info-widget.cc:48 src/libaudqt/prefs-window-qt.cc:172
+#: src/libaudqt/queue-manager-qt.cc:125
+msgid "Title"
+msgstr "Titlu"
+
+#: src/libaudgui/infopopup.cc:217 src/libaudgui/infowin.cc:405
+#: src/libaudgui/prefs-window.cc:102 src/libaudqt/infopopup-qt.cc:97
+#: src/libaudqt/info-widget.cc:49 src/libaudqt/prefs-window-qt.cc:169
+msgid "Artist"
+msgstr "Artist"
+
+#: src/libaudgui/infopopup.cc:218 src/libaudgui/infowin.cc:408
+#: src/libaudgui/prefs-window.cc:103 src/libaudgui/prefs-window.cc:151
+#: src/libaudqt/infopopup-qt.cc:99 src/libaudqt/info-widget.cc:50
+#: src/libaudqt/prefs-window-qt.cc:170 src/libaudqt/prefs-window-qt.cc:213
+msgid "Album"
+msgstr "Album"
+
+#: src/libaudgui/infopopup.cc:219 src/libaudgui/infowin.cc:418
+#: src/libaudgui/prefs-window.cc:107 src/libaudqt/infopopup-qt.cc:101
+#: src/libaudqt/info-widget.cc:53 src/libaudqt/prefs-window-qt.cc:174
+msgid "Genre"
+msgstr "Genul"
+
+#: src/libaudgui/infopopup.cc:220 src/libaudgui/infowin.cc:421
+#: src/libaudgui/prefs-window.cc:112 src/libaudqt/infopopup-qt.cc:103
+#: src/libaudqt/prefs-window-qt.cc:179
+msgid "Year"
+msgstr "An"
+
+#: src/libaudgui/infopopup.cc:221 src/libaudgui/prefs-window.cc:150
+#: src/libaudqt/infopopup-qt.cc:105 src/libaudqt/prefs-window-qt.cc:212
+msgid "Track"
+msgstr "Pista"
+
+#: src/libaudgui/infopopup.cc:222 src/libaudqt/infopopup-qt.cc:107
+msgid "Disc"
+msgstr "Disc"
+
+#: src/libaudgui/infopopup.cc:223 src/libaudqt/infopopup-qt.cc:109
+#: src/libaudqt/info-widget.cc:66
+msgid "Length"
+msgstr "Lungime"
+
+#: src/libaudgui/infowin.cc:51
+msgid "Format:"
+msgstr "Format:"
+
+#: src/libaudgui/infowin.cc:52
+msgid "Quality:"
+msgstr "Calitate:"
+
+#: src/libaudgui/infowin.cc:53
+msgid "Bitrate:"
+msgstr "Bitrate:"
+
+#: src/libaudgui/infowin.cc:87
+msgid "Acid Jazz"
+msgstr "Acid Jazz"
+
+#: src/libaudgui/infowin.cc:88
+msgid "Acid Rock"
+msgstr "Acid Rock"
+
+#: src/libaudgui/infowin.cc:89
+msgid "Ambient"
+msgstr "Ambient"
+
+#: src/libaudgui/infowin.cc:90
+msgid "Bebop"
+msgstr "Bebop"
+
+#: src/libaudgui/infowin.cc:91
+msgid "Bluegrass"
+msgstr "Bluegrass"
+
+#: src/libaudgui/infowin.cc:92
+msgid "Blues"
+msgstr "Blues"
+
+#: src/libaudgui/infowin.cc:93
+msgid "Chamber Music"
+msgstr "Muzică de cameră"
+
+#: src/libaudgui/infowin.cc:94
+msgid "Classical"
+msgstr "Clasic"
+
+#: src/libaudgui/infowin.cc:95
+msgid "Country"
+msgstr "Country"
+
+#: src/libaudgui/infowin.cc:96
+msgid "Death Metal"
+msgstr "Death Metal"
+
+#: src/libaudgui/infowin.cc:97
+msgid "Disco"
+msgstr "Disco"
+
+#: src/libaudgui/infowin.cc:98
+msgid "Easy Listening"
+msgstr "Easy Listening"
+
+#: src/libaudgui/infowin.cc:99
+msgid "Folk"
+msgstr "Folk"
+
+#: src/libaudgui/infowin.cc:100
+msgid "Funk"
+msgstr "Funk"
+
+#: src/libaudgui/infowin.cc:101
+msgid "Gangsta Rap"
+msgstr "Gangsta Rap"
+
+#: src/libaudgui/infowin.cc:102
+msgid "Gospel"
+msgstr "Evanghelic"
+
+#: src/libaudgui/infowin.cc:103
+msgid "Grunge"
+msgstr "Grunge"
+
+#: src/libaudgui/infowin.cc:104
+msgid "Hard Rock"
+msgstr "Hard Rock"
+
+#: src/libaudgui/infowin.cc:105
+msgid "Heavy Metal"
+msgstr "Heavy Metal"
+
+#: src/libaudgui/infowin.cc:106
+msgid "Hip-hop"
+msgstr "Hip-hop"
+
+#: src/libaudgui/infowin.cc:107
+msgid "House"
+msgstr "House"
+
+#: src/libaudgui/infowin.cc:108
+msgid "Jazz"
+msgstr "Jazz"
+
+#: src/libaudgui/infowin.cc:109
+msgid "Jungle"
+msgstr "Jungle"
+
+#: src/libaudgui/infowin.cc:110
+msgid "Metal"
+msgstr "Metal"
+
+#: src/libaudgui/infowin.cc:111
+msgid "New Age"
+msgstr "New Age"
+
+#: src/libaudgui/infowin.cc:112
+msgid "New Wave"
+msgstr "New Wave"
+
+#: src/libaudgui/infowin.cc:113
+msgid "Noise"
+msgstr "Zgomot"
+
+#: src/libaudgui/infowin.cc:114
+msgid "Pop"
+msgstr "Pop"
+
+#: src/libaudgui/infowin.cc:115
+msgid "Punk Rock"
+msgstr "Punk Rock"
+
+#: src/libaudgui/infowin.cc:116
+msgid "Rap"
+msgstr "Rap"
+
+#: src/libaudgui/infowin.cc:117
+msgid "Reggae"
+msgstr "Reggae"
+
+#: src/libaudgui/infowin.cc:118
+msgid "Rock"
+msgstr "Rock"
+
+#: src/libaudgui/infowin.cc:119
+msgid "Rock and Roll"
+msgstr "Rock & Roll"
+
+#: src/libaudgui/infowin.cc:120
+msgid "Rhythm and Blues"
+msgstr "Rhythm and Blues"
+
+#: src/libaudgui/infowin.cc:121
+msgid "Ska"
+msgstr "Ska"
+
+#: src/libaudgui/infowin.cc:122
+msgid "Soul"
+msgstr "Soul"
+
+#: src/libaudgui/infowin.cc:123
+msgid "Swing"
+msgstr "Swing"
+
+#: src/libaudgui/infowin.cc:124
+msgid "Techno"
+msgstr "Techno"
+
+#: src/libaudgui/infowin.cc:125
+msgid "Trip-hop"
+msgstr "Trip-hop"
+
+#: src/libaudgui/infowin.cc:232
+msgid "Save successful"
+msgstr "Salvare efectuată cu succes"
+
+#: src/libaudgui/infowin.cc:236
+msgid "Save error"
+msgstr "Eroare la salvare"
+
+#: src/libaudgui/infowin.cc:333 src/libaudgui/prefs-window.cc:87
+#: src/libaudqt/infowin-qt.cc:64 src/libaudqt/prefs-window-qt.cc:164
+msgid "Song Info"
+msgstr "Informații despre melodie"
+
+#: src/libaudgui/infowin.cc:411 src/libaudqt/info-widget.cc:51
+msgid "Album Artist"
+msgstr "Artist Album"
+
+#: src/libaudgui/infowin.cc:414 src/libaudgui/prefs-window.cc:113
+#: src/libaudqt/info-widget.cc:54 src/libaudqt/prefs-window-qt.cc:180
+msgid "Comment"
+msgstr "Comentariu"
+
+#: src/libaudgui/infowin.cc:424 src/libaudqt/info-widget.cc:52
+msgid "Track Number"
+msgstr "Număr pistă"
+
+#: src/libaudgui/infowin.cc:426
+msgid "_Auto-fill empty fields"
+msgstr "_Auto completează câmpuri libere"
+
+#: src/libaudgui/infowin.cc:440 src/libaudqt/infowin-qt.cc:121
+msgid "_Save"
+msgstr "_Salvează"
+
+#: src/libaudgui/infowin.cc:446
+msgid "_Previous"
+msgstr "_Precedent"
+
+#: src/libaudgui/infowin.cc:449
+msgid "_Next"
+msgstr "_Următorul"
+
+#: src/libaudgui/infowin.cc:498
+#, c-format
+msgid "%d kbit/s"
+msgstr "%d kbit/s"
+
+#: src/libaudgui/infowin.cc:503
+msgid "N/A"
+msgstr "N/A"
+
+#: src/libaudgui/jump-to-time.cc:47 src/libaudgui/jump-to-track.cc:327
+#: src/libaudqt/song-window-qt.cc:373
+msgid "_Jump"
+msgstr "_Sari"
+
+#: src/libaudgui/jump-to-time.cc:51
+msgid "Jump to Time"
+msgstr "Sari la Timp"
+
+#: src/libaudgui/jump-to-time.cc:51
+msgid "Enter time (minutes:seconds):"
+msgstr "Introdu timp (minute:secunde):"
+
+#: src/libaudgui/jump-to-track.cc:96 src/libaudgui/jump-to-track.cc:104
+#: src/libaudgui/jump-to-track.cc:318 src/libaudqt/song-window-qt.cc:290
+#: src/libaudqt/song-window-qt.cc:371
+msgid "_Queue"
+msgstr "_Adaugă la coadă"
+
+#: src/libaudgui/jump-to-track.cc:102 src/libaudqt/song-window-qt.cc:290
+msgid "Un_queue"
+msgstr "Scoate din coadă"
+
+#: src/libaudgui/jump-to-track.cc:248 src/libaudqt/song-window-qt.cc:305
+msgid "Jump to Song"
+msgstr "Sari la Melodie"
+
+#: src/libaudgui/jump-to-track.cc:274 src/libaudqt/song-window-qt.cc:322
+msgid "_Filter:"
+msgstr "_Filtru:"
+
+#: src/libaudgui/jump-to-track.cc:311 src/libaudqt/song-window-qt.cc:366
+msgid "C_lose on jump"
+msgstr "C_închide dialogul după salt"
+
+#: src/libaudgui/playlists.cc:92
+msgid "_Overwrite"
+msgstr "_Suprascrie"
+
+#: src/libaudgui/playlists.cc:96
+msgid "Confirm Overwrite"
+msgstr "Confirmă Suprascrierea"
+
+#: src/libaudgui/playlists.cc:96
+#, c-format
+msgid "Overwrite %s?"
+msgstr "Suprascrie %s?"
+
+#: src/libaudgui/playlists.cc:122 src/libaudqt/fileopener.cc:65
+msgid ""
+"Please type a filename extension or select a format from the drop-down list."
+msgstr ""
+"Te rugăm să specifici extensia sau să selectezi formatul din meniul de mai "
+"sus."
+
+#: src/libaudgui/playlists.cc:141 src/libaudqt/fileopener.cc:72
+msgid "Select Format by Extension"
+msgstr "Selecteaza formatul după extensie"
+
+#: src/libaudgui/playlists.cc:168 src/libaudqt/fileopener.cc:106
+msgid "Export Playlist"
+msgstr "Exportă Lista de redare"
+
+#: src/libaudgui/playlists.cc:169
+msgid "_Export"
+msgstr "_Exportă"
+
+#: src/libaudgui/playlists.cc:175 src/libaudqt/fileopener.cc:106
+msgid "Import Playlist"
+msgstr "Importă Lista de redare"
+
+#: src/libaudgui/playlists.cc:176
+msgid "_Import"
+msgstr "_Importă"
+
+#: src/libaudgui/plugin-menu.cc:40 src/libaudqt/plugin-menu-qt.cc:44
+msgid "_Plugins ..."
+msgstr "_Plugin-uri..."
+
+#: src/libaudgui/plugin-prefs.cc:110 src/libaudqt/prefs-plugin.cc:61
+#, c-format
+msgid "About %s"
+msgstr "Despre %s"
+
+#: src/libaudgui/plugin-prefs.cc:156 src/libaudqt/prefs-plugin.cc:126
+#, c-format
+msgid "%s Settings"
+msgstr "%s Setări"
+
+#: src/libaudgui/plugin-prefs.cc:161 src/libaudqt/prefs-plugin.cc:139
+msgid "_Set"
+msgstr "_Stabileşte"
+
+#: src/libaudgui/plugin-view.cc:236 src/libaudgui/prefs-window.cc:751
+#: src/libaudgui/prefs-window.cc:791 src/libaudqt/prefs-window-qt.cc:641
+#: src/libaudqt/prefs-window-qt.cc:644
+msgid "_Settings"
+msgstr "_Setări"
+
+#: src/libaudgui/plugin-view.cc:243 src/libaudgui/prefs-window.cc:765
+#: src/libaudgui/prefs-window.cc:803 src/libaudqt/prefs-window-qt.cc:642
+#: src/libaudqt/prefs-window-qt.cc:645
+msgid "_About"
+msgstr "_Despre"
+
+#: src/libaudgui/prefs-widget.cc:323 src/libaudqt/prefs-widget-qt.cc:238
+msgid "Choose File"
+msgstr "Alege un fișier"
+
+#: src/libaudgui/prefs-widget.cc:327 src/libaudqt/prefs-widget-qt.cc:242
+msgid "Choose Folder"
+msgstr "Alege un director"
+
+#: src/libaudgui/prefs-window.cc:83 src/libaudqt/prefs-window-qt.cc:160
+msgid "Appearance"
+msgstr "Aspect"
+
+#: src/libaudgui/prefs-window.cc:84 src/libaudqt/prefs-window-qt.cc:161
+msgid "Audio"
+msgstr "Audio"
+
+#: src/libaudgui/prefs-window.cc:85 src/libaudqt/prefs-window-qt.cc:162
+msgid "Network"
+msgstr "Rețea"
+
+#: src/libaudgui/prefs-window.cc:86 src/libaudgui/prefs-window.cc:97
+#: src/libaudqt/prefs-pluginlist-model.cc:43
+#: src/libaudqt/prefs-window-qt.cc:163
+msgid "Playlist"
+msgstr "Listă de redare"
+
+#: src/libaudgui/prefs-window.cc:88 src/libaudqt/prefs-window-qt.cc:165
+msgid "Plugins"
+msgstr "Plugin-uri"
+
+#: src/libaudgui/prefs-window.cc:89 src/libaudqt/prefs-window-qt.cc:166
+msgid "Advanced"
+msgstr "Avansat"
+
+#: src/libaudgui/prefs-window.cc:93 src/libaudqt/prefs-pluginlist-model.cc:39
+msgid "General"
+msgstr "General"
+
+#: src/libaudgui/prefs-window.cc:94 src/libaudqt/prefs-pluginlist-model.cc:40
+msgid "Effect"
+msgstr "Efect"
+
+#: src/libaudgui/prefs-window.cc:95 src/libaudqt/prefs-pluginlist-model.cc:41
+msgid "Visualization"
+msgstr "Vizualizare"
+
+#: src/libaudgui/prefs-window.cc:96 src/libaudqt/prefs-pluginlist-model.cc:42
+msgid "Input"
+msgstr "Intrare"
+
+#: src/libaudgui/prefs-window.cc:98 src/libaudqt/prefs-pluginlist-model.cc:44
+msgid "Transport"
+msgstr "Transport"
+
+#: src/libaudgui/prefs-window.cc:104 src/libaudqt/prefs-window-qt.cc:171
+msgid "Album artist"
+msgstr "Artist album"
+
+#: src/libaudgui/prefs-window.cc:106 src/libaudqt/prefs-window-qt.cc:173
+msgid "Track number"
+msgstr "Număr pistă"
+
+#: src/libaudgui/prefs-window.cc:108 src/libaudqt/prefs-window-qt.cc:175
+msgid "File name"
+msgstr "Nume fișier"
+
+#: src/libaudgui/prefs-window.cc:109 src/libaudqt/prefs-window-qt.cc:176
+msgid "File path"
+msgstr "Cale fișier"
+
+#: src/libaudgui/prefs-window.cc:110 src/libaudqt/prefs-window-qt.cc:177
+msgid "Date"
+msgstr "Dată"
+
+#: src/libaudgui/prefs-window.cc:111 src/libaudqt/info-widget.cc:55
+#: src/libaudqt/prefs-window-qt.cc:178
+msgid "Description"
+msgstr "Descriere"
+
+#: src/libaudgui/prefs-window.cc:114 src/libaudqt/info-widget.cc:67
+#: src/libaudqt/prefs-window-qt.cc:181
+msgid "Codec"
+msgstr "Codec"
+
+#: src/libaudgui/prefs-window.cc:115 src/libaudqt/info-widget.cc:68
+#: src/libaudqt/prefs-window-qt.cc:182
+msgid "Quality"
+msgstr "Calitate"
+
+#: src/libaudgui/prefs-window.cc:116 src/libaudqt/prefs-window-qt.cc:183
+msgid "Disc number"
+msgstr ""
+
+#: src/libaudgui/prefs-window.cc:120 src/libaudqt/prefs-window-qt.cc:186
+msgid "None"
+msgstr "Niciunul"
+
+#: src/libaudgui/prefs-window.cc:121 src/libaudqt/prefs-window-qt.cc:187
+msgid "Arabic"
+msgstr "Arabic"
+
+#: src/libaudgui/prefs-window.cc:122 src/libaudqt/prefs-window-qt.cc:188
+msgid "Baltic"
+msgstr "Baltic"
+
+#: src/libaudgui/prefs-window.cc:123 src/libaudqt/prefs-window-qt.cc:189
+msgid "Chinese"
+msgstr "Chinezesc"
+
+#: src/libaudgui/prefs-window.cc:124 src/libaudqt/prefs-window-qt.cc:190
+msgid "Greek"
+msgstr "Grec"
+
+#: src/libaudgui/prefs-window.cc:125 src/libaudqt/prefs-window-qt.cc:191
+msgid "Hebrew"
+msgstr "Ebraică"
+
+#: src/libaudgui/prefs-window.cc:126 src/libaudqt/prefs-window-qt.cc:192
+msgid "Japanese"
+msgstr "Japoneză"
+
+#: src/libaudgui/prefs-window.cc:127 src/libaudqt/prefs-window-qt.cc:193
+msgid "Korean"
+msgstr "Koreană"
+
+#: src/libaudgui/prefs-window.cc:128 src/libaudqt/prefs-window-qt.cc:194
+msgid "Polish"
+msgstr "Poloneză"
+
+#: src/libaudgui/prefs-window.cc:129 src/libaudqt/prefs-window-qt.cc:195
+msgid "Russian"
+msgstr "Rusă"
+
+#: src/libaudgui/prefs-window.cc:130 src/libaudqt/prefs-window-qt.cc:196
+msgid "Taiwanese"
+msgstr "Taiwaneză"
+
+#: src/libaudgui/prefs-window.cc:131 src/libaudqt/prefs-window-qt.cc:197
+msgid "Turkish"
+msgstr "Turcă"
+
+#: src/libaudgui/prefs-window.cc:135 src/libaudqt/prefs-window-qt.cc:200
+msgid "Automatic"
+msgstr "Automat"
+
+#: src/libaudgui/prefs-window.cc:139 src/libaudqt/prefs-window-qt.cc:201
+msgid "Floating point"
+msgstr "Virgulă mobilă"
+
+#: src/libaudgui/prefs-window.cc:143 src/libaudqt/prefs-window-qt.cc:204
+msgid "As decoded"
+msgstr "Cum e decodat"
+
+#: src/libaudgui/prefs-window.cc:144 src/libaudqt/prefs-window-qt.cc:205
+msgid "After applying ReplayGain"
+msgstr "După aplicarea ReplayGain"
+
+#: src/libaudgui/prefs-window.cc:145 src/libaudqt/prefs-window-qt.cc:207
+msgid "After applying effects"
+msgstr "După aplicarea efectelor"
+
+#: src/libaudgui/prefs-window.cc:146 src/libaudqt/prefs-window-qt.cc:208
+msgid "After applying equalization"
+msgstr "Dupa aplicarea egalizării"
+
+#: src/libaudgui/prefs-window.cc:152 src/libaudqt/prefs-window-qt.cc:214
+msgid "Based on shuffle"
+msgstr "Bazat pe setarea de amestecare"
+
+#: src/libaudgui/prefs-window.cc:167
+msgid "Restart in Qt mode"
+msgstr "Reporneste în modul Qt"
+
+#: src/libaudgui/prefs-window.cc:176
+msgid "Audacious is running in GTK mode."
+msgstr ""
+
+#: src/libaudgui/prefs-window.cc:180
+msgid "Qt mode is unavailable in this build."
+msgstr "Modul Qt nu este disponibil în această versiune."
+
+#: src/libaudgui/prefs-window.cc:182 src/libaudqt/prefs-window-qt.cc:270
+msgid "Interface:"
+msgstr "Interfață:"
+
+#: src/libaudgui/prefs-window.cc:201 src/libaudqt/prefs-window-qt.cc:284
+msgid "Output plugin:"
+msgstr "Plugin de ieșire:"
+
+#: src/libaudgui/prefs-window.cc:222 src/libaudqt/prefs-window-qt.cc:297
+msgid "Amplify all files:"
+msgstr "Amplifică toate fişierele:"
+
+#: src/libaudgui/prefs-window.cc:224 src/libaudgui/prefs-window.cc:227
+#: src/libaudqt/prefs-window-qt.cc:298 src/libaudqt/prefs-window-qt.cc:300
+msgid "dB"
+msgstr "dB"
+
+#: src/libaudgui/prefs-window.cc:225 src/libaudqt/prefs-window-qt.cc:299
+msgid "Amplify untagged files:"
+msgstr "Amplifică fișiere neetichetate"
+
+#: src/libaudgui/prefs-window.cc:231 src/libaudqt/prefs-window-qt.cc:303
+msgid "<b>Output Settings</b>"
+msgstr "<b>Setări Ieşire</b>"
+
+#: src/libaudgui/prefs-window.cc:233 src/libaudqt/prefs-window-qt.cc:305
+msgid "Bit depth:"
+msgstr "Adâncime bit:"
+
+#: src/libaudgui/prefs-window.cc:236 src/libaudgui/prefs-window.cc:281
+#: src/libaudqt/prefs-window-qt.cc:308 src/libaudqt/prefs-window-qt.cc:336
+msgid "Buffer size:"
+msgstr "Mărimea Buffer-ului:"
+
+#: src/libaudgui/prefs-window.cc:238 src/libaudqt/prefs-window-qt.cc:309
+msgid "ms"
+msgstr "ms"
+
+#: src/libaudgui/prefs-window.cc:239 src/libaudqt/prefs-window-qt.cc:310
+msgid "Soft clipping"
+msgstr "Saturarea audio folosind metoda Soft clipping"
+
+#: src/libaudgui/prefs-window.cc:241 src/libaudqt/prefs-window-qt.cc:311
+msgid "Use software volume control (not recommended)"
+msgstr "Controlează volumul la nivel software (nu este recomandat)"
+
+#: src/libaudgui/prefs-window.cc:243 src/libaudqt/prefs-window-qt.cc:313
+msgid "<b>Recording Settings</b>"
+msgstr "<b>Setări de înregistrare</b>"
+
+#: src/libaudgui/prefs-window.cc:247 src/libaudqt/prefs-window-qt.cc:316
+msgid "Record stream:"
+msgstr "Înregistrează streamul:"
+
+#: src/libaudgui/prefs-window.cc:250 src/libaudqt/prefs-window-qt.cc:318
+msgid "<b>ReplayGain</b>"
+msgstr "<b>ReplayGain</b>"
+
+#: src/libaudgui/prefs-window.cc:251 src/libaudqt/prefs-window-qt.cc:319
+msgid "Enable ReplayGain"
+msgstr "Activează ReplayGain"
+
+#: src/libaudgui/prefs-window.cc:253 src/libaudqt/prefs-window-qt.cc:320
+msgid "Mode:"
+msgstr "Mod:"
+
+#: src/libaudgui/prefs-window.cc:257 src/libaudqt/prefs-window-qt.cc:322
+msgid "Prevent clipping (recommended)"
+msgstr "Previne suprapunerea (recomandat)"
+
+#: src/libaudgui/prefs-window.cc:265 src/libaudqt/prefs-window-qt.cc:327
+msgid "Proxy hostname:"
+msgstr "Adresa sau numele:"
+
+#: src/libaudgui/prefs-window.cc:267 src/libaudqt/prefs-window-qt.cc:328
+msgid "Proxy port:"
+msgstr "Portul pentru proxy:"
+
+#: src/libaudgui/prefs-window.cc:272 src/libaudqt/prefs-window-qt.cc:331
+msgid "Proxy username:"
+msgstr "Utilizator proxy:"
+
+#: src/libaudgui/prefs-window.cc:274 src/libaudqt/prefs-window-qt.cc:332
+msgid "Proxy password:"
+msgstr "Parolă proxy:"
+
+#: src/libaudgui/prefs-window.cc:280 src/libaudqt/prefs-window-qt.cc:335
+msgid "<b>Network Settings</b>"
+msgstr "<b>Setări de reţea</b>"
+
+#: src/libaudgui/prefs-window.cc:283 src/libaudqt/prefs-window-qt.cc:337
+msgid "KiB"
+msgstr "KiB"
+
+#: src/libaudgui/prefs-window.cc:284 src/libaudqt/prefs-window-qt.cc:338
+msgid "<b>Proxy Configuration</b>"
+msgstr "<b>Configurarea Proxy-ului</b>"
+
+#: src/libaudgui/prefs-window.cc:285 src/libaudqt/prefs-window-qt.cc:339
+msgid "Enable proxy usage"
+msgstr "Activează proxy"
+
+#: src/libaudgui/prefs-window.cc:289 src/libaudqt/prefs-window-qt.cc:341
+msgid "Use authentication with proxy"
+msgstr "Folosește autentificarea"
+
+#: src/libaudgui/prefs-window.cc:293 src/libaudqt/prefs-window-qt.cc:344
+msgid "Use SOCKS proxy"
+msgstr "Folosește SOCKS proxy"
+
+#: src/libaudgui/prefs-window.cc:295 src/libaudqt/prefs-window-qt.cc:345
+msgid "SOCKS v4a"
+msgstr "SOCKS v4a"
+
+#: src/libaudgui/prefs-window.cc:299 src/libaudqt/prefs-window-qt.cc:346
+msgid "SOCKS v5"
+msgstr "SOCKS v5"
+
+#: src/libaudgui/prefs-window.cc:306 src/libaudqt/prefs-window-qt.cc:349
+msgid "Auto character encoding detector for:"
+msgstr "Detecție automată a codificării caracterelor pentru:"
+
+#: src/libaudgui/prefs-window.cc:309 src/libaudqt/prefs-window-qt.cc:352
+msgid "Fallback character encodings:"
+msgstr "Setări de rezervă pentru codificările caracterelor"
+
+#: src/libaudgui/prefs-window.cc:317 src/libaudqt/prefs-window-qt.cc:359
+msgid "<b>Behavior</b>"
+msgstr "<b>Comportament</b>"
+
+#: src/libaudgui/prefs-window.cc:318 src/libaudqt/prefs-window-qt.cc:360
+msgid "Resume playback on startup"
+msgstr "Continuă redare la pornire"
+
+#: src/libaudgui/prefs-window.cc:320 src/libaudqt/prefs-window-qt.cc:362
+msgid "Pause instead of resuming immediately"
+msgstr "Pauză în loc de redare imediată"
+
+#: src/libaudgui/prefs-window.cc:323 src/libaudqt/prefs-window-qt.cc:364
+msgid "Advance when the current song is deleted"
+msgstr "Avansează dacă melodia curentă este ștearsă"
+
+#: src/libaudgui/prefs-window.cc:325 src/libaudqt/prefs-window-qt.cc:366
+msgid "Clear the playlist when opening files"
+msgstr "Golește lista de redare la deschiderea de noi fișiere"
+
+#: src/libaudgui/prefs-window.cc:327 src/libaudqt/prefs-window-qt.cc:368
+msgid "Open files in a temporary playlist"
+msgstr "Deschide fișierele într-o listă de redare temporară"
+
+#: src/libaudgui/prefs-window.cc:329 src/libaudqt/prefs-window-qt.cc:370
+msgid "<b>Song Display</b>"
+msgstr "<b>Vizualizarea melodiei</b>"
+
+#: src/libaudgui/prefs-window.cc:330 src/libaudqt/prefs-window-qt.cc:371
+msgid "Show song numbers"
+msgstr "Show song numbers"
+
+#: src/libaudgui/prefs-window.cc:332 src/libaudqt/prefs-window-qt.cc:373
+msgid "Show leading zeroes (02:00 vs. 2:00)"
+msgstr "Arată zerourile de la început  (02:00 vs. 2:00)"
+
+#: src/libaudgui/prefs-window.cc:334 src/libaudqt/prefs-window-qt.cc:375
+msgid "Show hours separately (1:30:00 vs. 90:00)"
+msgstr "Arată ora separat (1:30:00 vs. 90:00)"
+
+#: src/libaudgui/prefs-window.cc:337 src/libaudqt/prefs-window-qt.cc:378
+msgid "<b>Export</b>"
+msgstr "<b>Exportă</b>"
+
+#: src/libaudgui/prefs-window.cc:338 src/libaudqt/prefs-window-qt.cc:379
+msgid "Use relative paths when possible"
+msgstr "Folosește căi de acces relative atunci când este posibil"
+
+#: src/libaudgui/prefs-window.cc:343 src/libaudqt/prefs-window-qt.cc:383
+msgid "<b>Album Art</b>"
+msgstr "<b>Album Art</b>"
+
+#: src/libaudgui/prefs-window.cc:344 src/libaudqt/prefs-window-qt.cc:385
+msgid "Search for images matching these words (comma-separated):"
+msgstr "Caută imagini care se potrivesc cu cuvintele (comma-separated):"
+
+#: src/libaudgui/prefs-window.cc:346 src/libaudqt/prefs-window-qt.cc:387
+msgid "Exclude images matching these words (comma-separated):"
+msgstr "Exclude imaginile care se potrivesc cu cuvintele (comma-separated):"
+
+#: src/libaudgui/prefs-window.cc:348 src/libaudqt/prefs-window-qt.cc:389
+msgid "Search for images matching song file name"
+msgstr "Caută imagini care se potrivesc cu numele de fişier al melodiei"
+
+#: src/libaudgui/prefs-window.cc:350 src/libaudqt/prefs-window-qt.cc:391
+msgid "Search recursively"
+msgstr "Caută recursiv"
+
+#: src/libaudgui/prefs-window.cc:352 src/libaudqt/prefs-window-qt.cc:392
+msgid "Search depth:"
+msgstr "Adâncime de căutare:"
+
+#: src/libaudgui/prefs-window.cc:356 src/libaudqt/prefs-window-qt.cc:394
+msgid "<b>Popup Information</b>"
+msgstr "<b>Popup cu Informații</b>"
+
+#: src/libaudgui/prefs-window.cc:357 src/libaudqt/prefs-window-qt.cc:395
+msgid "Show popup information"
+msgstr "Arată informaţie popup"
+
+#: src/libaudgui/prefs-window.cc:359 src/libaudqt/prefs-window-qt.cc:397
+msgid "Popup delay (tenths of a second):"
+msgstr "Întârziere popup (zecimi de secundă)"
+
+#: src/libaudgui/prefs-window.cc:363
+msgid "Show time scale for current song"
+msgstr "Arată scala de timp pentru melodia curentă"
+
+#: src/libaudgui/prefs-window.cc:369 src/libaudqt/prefs-window-qt.cc:401
+msgid "<b>Compatibility</b>"
+msgstr "<b>Compatibilitate</b>"
+
+#: src/libaudgui/prefs-window.cc:370 src/libaudqt/prefs-window-qt.cc:402
+msgid "Interpret \\ (backward slash) as a folder delimiter"
+msgstr "Consideră \\ (backward slash) ca delimitator de directoare"
+
+#: src/libaudgui/prefs-window.cc:373 src/libaudqt/prefs-window-qt.cc:405
+msgid "<b>Playlist</b>"
+msgstr "<b>Playlist</b>"
+
+#: src/libaudgui/prefs-window.cc:374 src/libaudqt/prefs-window-qt.cc:406
+msgid "Add folders recursively"
+msgstr "Adaugă dosarele recursiv"
+
+#: src/libaudgui/prefs-window.cc:376 src/libaudqt/prefs-window-qt.cc:408
+msgid "Add folders nested within playlist files"
+msgstr "Adaugă dosare ce se află în interiorul fișierelor de playlist"
+
+#: src/libaudgui/prefs-window.cc:378 src/libaudqt/prefs-window-qt.cc:410
+msgid "<b>Metadata</b>"
+msgstr "<b>Metadata</b>"
+
+#: src/libaudgui/prefs-window.cc:379 src/libaudqt/prefs-window-qt.cc:411
+msgid "Guess missing metadata from file path"
+msgstr "Ghicește metadatele lipsă din calea de acces către fișier"
+
+#: src/libaudgui/prefs-window.cc:381 src/libaudqt/prefs-window-qt.cc:413
+msgid "Do not load metadata for songs until played"
+msgstr "Nu încărca metadata melodiilor decât la momentul redării"
+
+#: src/libaudgui/prefs-window.cc:383 src/libaudqt/prefs-window-qt.cc:416
+msgid "Probe content of files with no recognized file name extension"
+msgstr "Examinează conţinutul fişierelor cu extensie necunoscută"
+
+#: src/libaudgui/prefs-window.cc:385 src/libaudqt/prefs-window-qt.cc:418
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Diverse</b>"
+
+#: src/libaudgui/prefs-window.cc:386 src/libaudqt/prefs-window-qt.cc:419
+msgid "Step forward/backward by:"
+msgstr "Pas înainte/înapoi după:"
+
+#: src/libaudgui/prefs-window.cc:388 src/libaudqt/prefs-window-qt.cc:420
+msgid "seconds"
+msgstr "secunde"
+
+#: src/libaudgui/prefs-window.cc:389 src/libaudqt/prefs-window-qt.cc:421
+msgid "Adjust volume by:"
+msgstr "Adjustează volumul după:"
+
+#: src/libaudgui/prefs-window.cc:391 src/libaudqt/prefs-window-qt.cc:422
+msgid "percent"
+msgstr "procent"
+
+#: src/libaudgui/prefs-window.cc:410 src/libaudqt/prefs-window-qt.cc:443
+msgid "TITLE"
+msgstr "TITLU"
+
+#: src/libaudgui/prefs-window.cc:411 src/libaudqt/prefs-window-qt.cc:444
+msgid "TITLE - ARTIST"
+msgstr "TITLU - ARTIST"
+
+#: src/libaudgui/prefs-window.cc:412 src/libaudqt/prefs-window-qt.cc:445
+msgid "TITLE - ARTIST - ALBUM"
+msgstr "TITLU - ARTIST - ALBUM"
+
+#: src/libaudgui/prefs-window.cc:413 src/libaudqt/prefs-window-qt.cc:446
+msgid "ARTIST - TITLE"
+msgstr "ARTIST - TITLU"
+
+#: src/libaudgui/prefs-window.cc:414 src/libaudqt/prefs-window-qt.cc:447
+msgid "ARTIST - ALBUM - TITLE"
+msgstr "ARTIST - ALBUM - TITLU"
+
+#: src/libaudgui/prefs-window.cc:415 src/libaudqt/prefs-window-qt.cc:448
+msgid "ARTIST - ALBUM - TRACK. TITLE"
+msgstr "ARTIST - ALBUM - SEMN. TITLU"
+
+#: src/libaudgui/prefs-window.cc:416 src/libaudqt/prefs-window-qt.cc:449
+msgid "ARTIST [ ALBUM ] - TRACK. TITLE"
+msgstr "ARTIST [ ALBUM ] - SEMN. TITLU"
+
+#: src/libaudgui/prefs-window.cc:417 src/libaudqt/prefs-window-qt.cc:450
+msgid "ARTIST - ALBUM - DISC.TRACK. TITLE"
+msgstr ""
+
+#: src/libaudgui/prefs-window.cc:418 src/libaudqt/prefs-window-qt.cc:451
+msgid "ARTIST [ ALBUM ] - DISC.TRACK. TITLE"
+msgstr ""
+
+#: src/libaudgui/prefs-window.cc:419 src/libaudqt/prefs-window-qt.cc:452
+msgid "ALBUM - TITLE"
+msgstr "ALBUM - TITLU"
+
+#: src/libaudgui/prefs-window.cc:517
+msgid "Category"
+msgstr "Categorie"
+
+#: src/libaudgui/prefs-window.cc:573 src/libaudqt/prefs-window-qt.cc:469
+msgid "Custom"
+msgstr "Personalizat"
+
+#: src/libaudgui/prefs-window.cc:591 src/libaudqt/prefs-window-qt.cc:461
+msgid "Title format:"
+msgstr "Formatul titlului:"
+
+#: src/libaudgui/prefs-window.cc:592 src/libaudqt/prefs-window-qt.cc:472
+msgid "Custom string:"
+msgstr "Format specificat:"
+
+#: src/libaudgui/prefs-window.cc:817 src/libaudqt/prefs-window-qt.cc:781
+#, c-format
+msgid "Enable audio stream recording with %s"
+msgstr "Activează înregistrarea audio a streamului cu %s"
+
+#: src/libaudgui/prefs-window.cc:826 src/libaudqt/prefs-window-qt.cc:794
+msgid "No audio recording plugin available"
+msgstr "Nu exista un plugin disponibil pentru înregistarea audio"
+
+#: src/libaudgui/prefs-window.cc:887 src/libaudqt/prefs-window-qt.cc:654
+msgid "Audacious Settings"
+msgstr "Setări Audacious"
+
+#: src/libaudgui/preset-browser.cc:53 src/libaudgui/util.cc:209
+#: src/libaudqt/fileopener.cc:125
+msgid "Cancel"
+msgstr "Anulare"
+
+#: src/libaudgui/preset-browser.cc:54 src/libaudqt/eq-preset-qt.cc:299
+msgid "Save"
+msgstr "Salvează"
+
+#: src/libaudgui/preset-browser.cc:54 src/libaudqt/eq-preset-qt.cc:261
+msgid "Load"
+msgstr "Încarcă"
+
+#: src/libaudgui/preset-browser.cc:85 src/libaudqt/eq-preset-qt.cc:257
+msgid "Load Preset File"
+msgstr "Încarcă fișierele de preconfigurare"
+
+#: src/libaudgui/preset-browser.cc:99
+msgid "Load EQF File"
+msgstr "Încarcă fișierele EQF"
+
+#: src/libaudgui/preset-browser.cc:114 src/libaudqt/eq-preset-qt.cc:294
+msgid "Save Preset File"
+msgstr "Salvează fișierul de preconfigurare"
+
+#: src/libaudgui/preset-browser.cc:131
+msgid "Save EQF File"
+msgstr "Salvează fișierul EQF"
+
+#: src/libaudgui/queue-manager.cc:175 src/libaudqt/queue-manager-qt.cc:344
+msgid "Queue Manager"
+msgstr "Managerul cozii de redare"
+
+#: src/libaudgui/queue-manager.cc:194 src/libaudqt/queue-manager-qt.cc:326
+msgid "_Unqueue"
+msgstr "_Scoate din coada de redare"
+
+#: src/libaudgui/status.cc:37
+msgid "Working ..."
+msgstr "Se lucrează ..."
+
+#: src/libaudgui/status.cc:87 src/libaudqt/log-inspector.cc:226
+msgid "Error"
+msgstr "Eroare"
+
+#: src/libaudgui/status.cc:92
+msgid "Information"
+msgstr "Informații"
+
+#: src/libaudgui/url-opener.cc:59 src/libaudqt/url-opener-qt.cc:41
+msgid "_Save to history"
+msgstr "_Salvează în istoric"
+
+#: src/libaudgui/url-opener.cc:67 src/libaudqt/url-opener-qt.cc:47
+msgid "Open URL"
+msgstr "Deschide URL"
+
+#: src/libaudgui/url-opener.cc:73 src/libaudqt/url-opener-qt.cc:53
+msgid "Add URL"
+msgstr "Adaugă URL"
+
+#: src/libaudgui/url-opener.cc:96 src/libaudqt/url-opener-qt.cc:70
+msgid "C_lear history"
+msgstr "C_urăță istoricul"
+
+#: src/libaudgui/url-opener.cc:108 src/libaudqt/url-opener-qt.cc:63
+msgid "Enter URL:"
+msgstr "Introdu URL:"
+
+#: src/libaudgui/util.cc:209 src/libaudqt/fileopener.cc:109
+msgid "Open"
+msgstr "Deschide"
+
+#: src/libaudgui/util.cc:351
+msgid ""
+"\n"
+"(Further messages have been hidden.)"
+msgstr ""
+"\n"
+"(Mesajele următoare au fost ascunse.)"
+
+#: src/libaudqt/eq-preset-qt.cc:252
+msgid "Preset files (*.preset *.eqf *.q1)"
+msgstr "Fișiere cu preconfigurări (*.preset *.eqf *.q1)"
+
+#: src/libaudqt/eq-preset-qt.cc:347
+msgid "Revert"
+msgstr "Revino"
+
+#: src/libaudqt/file-entry.cc:40
+msgid "Browse"
+msgstr "Răsfoire"
+
+#: src/libaudqt/fileopener.cc:105
+msgid "Open Folder"
+msgstr "Deschide director"
+
+#: src/libaudqt/fileopener.cc:106
+msgid "Add Folder"
+msgstr "Adaugă director"
+
+#: src/libaudqt/fileopener.cc:109 src/libaudqt/fileopener.cc:110
+msgid "Add"
+msgstr "Adaugă"
+
+#: src/libaudqt/font-entry.cc:41
+msgid "Set Font"
+msgstr "Seteaza font"
+
+#: src/libaudqt/info-widget.cc:44
+msgid "<various>"
+msgstr "<various>"
+
+#: src/libaudqt/info-widget.cc:47
+msgid "Metadata"
+msgstr "Metadate"
+
+#: src/libaudqt/info-widget.cc:56
+msgid "Composer"
+msgstr "Compozitor"
+
+#: src/libaudqt/info-widget.cc:57
+msgid "Performer"
+msgstr "Interpret"
+
+#: src/libaudqt/info-widget.cc:58
+msgid "Recording Year"
+msgstr "Anul Înregistrării"
+
+#: src/libaudqt/info-widget.cc:59
+msgid "Recording Date"
+msgstr "Data Înregistrării"
+
+#: src/libaudqt/info-widget.cc:60
+msgid "Publisher"
+msgstr "Casă de discuri"
+
+#: src/libaudqt/info-widget.cc:61
+msgid "Catalog Number"
+msgstr "Numărul de catalog"
+
+#: src/libaudqt/info-widget.cc:62
+msgid "Disc Number"
+msgstr "Numărul discului"
+
+#: src/libaudqt/info-widget.cc:65
+msgid "Technical"
+msgstr "Tehnic"
+
+#: src/libaudqt/info-widget.cc:69
+msgid "Bitrate"
+msgstr "Bitrate"
+
+#: src/libaudqt/info-widget.cc:70
+msgid "Channels"
+msgstr "Canale"
+
+#: src/libaudqt/info-widget.cc:71
+msgid "MusicBrainz ID"
+msgstr "Cont MusicBrainz"
+
+#: src/libaudqt/infowin-qt.cc:94
+msgid "_Revert"
+msgstr "_Restaurează"
+
+#: src/libaudqt/infowin-qt.cc:105
+msgid "Error writing tag(s)."
+msgstr "A apărut o eroare în timpul scierii etichetei(lor)."
+
+#: src/libaudqt/infowin-qt.cc:127
+msgid "%1 files selected"
+msgstr "%1 fișiere selectate"
+
+#: src/libaudqt/infowin-qt.cc:131
+msgid "_Save %1 files"
+msgstr "_%1 fișiere salvate"
+
+#: src/libaudqt/log-inspector.cc:152
+msgid "Level"
+msgstr "Nivel"
+
+#: src/libaudqt/log-inspector.cc:154
+msgid "Function"
+msgstr "Funcţie"
+
+#: src/libaudqt/log-inspector.cc:156
+msgid "Message"
+msgstr "Mesaj"
+
+#: src/libaudqt/log-inspector.cc:211
+msgid "Log Inspector"
+msgstr "Inspectorul de jurnale de erori"
+
+#: src/libaudqt/log-inspector.cc:223
+msgid "Debug"
+msgstr "Depanare"
+
+#: src/libaudqt/log-inspector.cc:224
+msgid "Info"
+msgstr "Informaţii"
+
+#: src/libaudqt/log-inspector.cc:225
+msgid "Warning"
+msgstr "Avertizare"
+
+#: src/libaudqt/log-inspector.cc:237
+msgid "Cl_ear"
+msgstr "Cl_ear"
+
+#: src/libaudqt/log-inspector.cc:250
+msgid "Log Level:"
+msgstr "Nivelul de preluare a informațiilor de jurnal:"
+
+#: src/libaudqt/plugin-menu-qt.cc:52
+msgid "Services"
+msgstr "Servicii"
+
+#: src/libaudqt/prefs-window-qt.cc:228
+msgid "Restart in GTK mode"
+msgstr "Restartează în modul GTK"
+
+#: src/libaudqt/prefs-window-qt.cc:237 src/libaudqt/prefs-window-qt.cc:250
+msgid "Native"
+msgstr "Nativ"
+
+#: src/libaudqt/prefs-window-qt.cc:238
+msgid "Dark"
+msgstr "Întunecat"
+
+#: src/libaudqt/prefs-window-qt.cc:252
+msgid "Flat"
+msgstr "Plat"
+
+#: src/libaudqt/prefs-window-qt.cc:253
+msgid "Flat (dark)"
+msgstr "Plat (întunecat)"
+
+#: src/libaudqt/prefs-window-qt.cc:263
+msgid "Audacious is running in Qt mode."
+msgstr "Audacious ruleaza în modul Qt"
+
+#: src/libaudqt/prefs-window-qt.cc:267
+msgid "GTK mode is unavailable in this build."
+msgstr ""
+
+#: src/libaudqt/prefs-window-qt.cc:273
+msgid "Theme:"
+msgstr "Temă:"
+
+#: src/libaudqt/prefs-window-qt.cc:275
+msgid "Icon theme:"
+msgstr "Tema pictogramei:"
+
+#: src/libaudqt/util-qt.cc:113
+msgid "Copy"
+msgstr "Copiază"
+
+#: src/libaudqt/volumebutton.cc:165
+#, c-format
+msgid "%d%%"
+msgstr "%d%%"

@@ -1,0 +1,29 @@
+#mesondefine PACKAGE
+#mesondefine BUILDSTAMP
+#mesondefine VERSION
+#mesondefine COPYRIGHT
+#mesondefine EXPORT
+#mesondefine PLUGIN_SUFFIX
+#mesondefine VALGRIND_FRIENDLY
+#mesondefine WORDS_BIGENDIAN
+
+#define PACKAGE_VERSION VERSION
+#define ICONV_CONST
+
+#mesondefine HAVE_GETTEXT
+#mesondefine HAVE_SIGWAIT
+
+#mesondefine INSTALL_BINDIR
+#mesondefine INSTALL_DATADIR
+#mesondefine INSTALL_PLUGINDIR
+#mesondefine INSTALL_LOCALEDIR
+#mesondefine INSTALL_DESKTOPFILE
+#mesondefine INSTALL_ICONFILE
+
+#mesondefine USE_DBUS
+#mesondefine USE_QT
+#mesondefine USE_GTK
+#mesondefine USE_GTK3
+#mesondefine USE_LIBARCHIVE
+
+#mesondefine GLIB_VERSION_MIN_REQUIRED

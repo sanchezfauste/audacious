@@ -4,6 +4,7 @@ libaudgui_sources = [
   'eq-preset.cc',
   'equalizer.cc',
   'file-opener.cc',
+  'gtk-compat.cc',
   'infopopup.cc',
   'infowin.cc',
   'init.cc',
@@ -22,6 +23,7 @@ libaudgui_sources = [
   'preset-browser.cc',
   'queue-manager.cc',
   'scaled-image.cc',
+  'settings-portal.cc',
   'status.cc',
   'urilist.cc',
   'url-opener.cc',
@@ -30,6 +32,7 @@ libaudgui_sources = [
 
 
 libaudgui_headers = [
+  'gtk-compat.h',
   'libaudgui.h',
   'libaudgui-gtk.h',
   'list.h',
@@ -50,9 +53,9 @@ libaudgui_lib = library('audgui',
   libaudgui_sources,
   image_resources,
   include_directories: [src_inc],
-  dependencies: [gtk_dep],
+  dependencies: [gtk_dep, intl_dep],
   link_with: [libaudcore_lib],
-  soversion: '5',
-  version: '5.1.0',
+  soversion: '6',
+  version: '6.0.0',
   install: true
 )

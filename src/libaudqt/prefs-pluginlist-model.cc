@@ -72,7 +72,7 @@ QModelIndex PluginListModel::index(int row, int column,
     if (cat < 0 || cat >= n_categories)
         return QModelIndex();
 
-    auto & list = aud_plugin_list(categories[cat].type);
+    auto & list = aud_plugin_list_sorted(categories[cat].type);
     if (row < 0 || row >= list.len())
         return QModelIndex();
 
@@ -158,14 +158,14 @@ QVariant PluginListModel::data(const QModelIndex & index, int role) const
 
     case AboutColumn:
         if (role == Qt::DecorationRole && enabled && aud_plugin_has_about(p))
-            return audqt::get_icon("dialog-information");
+            return QIcon::fromTheme("dialog-information");
 
         break;
 
     case SettingsColumn:
         if (role == Qt::DecorationRole && enabled &&
             aud_plugin_has_configure(p))
-            return audqt::get_icon("preferences-system");
+            return QIcon::fromTheme("preferences-system");
 
         break;
     }

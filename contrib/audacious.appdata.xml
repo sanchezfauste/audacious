@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2015 Audacious developers -->
+<!-- Copyright 2015-2026 Audacious developers -->
 <component type="desktop">
   <id>audacious.desktop</id>
+  <launchable type="desktop-id">audacious.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-2-Clause</project_license>
   <name>Audacious</name>
+  <developer id="org.atheme.audacious">
+    <name>Audacious developers</name>
+  </developer>
   <summary>Lightweight audio player</summary>
   <description>
     <p>
-      Audacious is an open source audio player. Originally a descendant of XMMS,
+      Audacious is an open source audio player. A descendant of XMMS,
       Audacious plays your music how you want it, without stealing away your
       computer’s resources from other tasks.
     </p>
@@ -16,14 +20,25 @@
       Drag and drop folders and individual song files, search for artists and
       albums in your entire music library, or create and edit your own custom
       playlists. Listen to CD’s or stream music from the Internet. Tweak the
-      sound with the graphical equalizer or experiment with LADSPA
-      effects. Enjoy the modern GTK-themed interface or change things up with
+      sound with the graphical equalizer or change the dynamic range with audio
+      effects. Enjoy the modern Qt/GTK themed interface or change things up with
       Winamp Classic skins. Use the plugins included with Audacious to fetch
-      lyrics for your music, to set an alarm in the morning, and more.
+      lyrics for your music, display a VU meter, and more.
     </p>
   </description>
   <url type="homepage">https://audacious-media-player.org</url>
+  <url type="bugtracker">https://github.com/audacious-media-player/audacious/issues</url>
+  <url type="vcs-browser">https://github.com/audacious-media-player</url>
+  <url type="translate">https://app.transifex.com/audacious</url>
   <releases>
+    <release date="2025-09-07" version="4.5.1"></release>
+    <release date="2025-07-16" version="4.5"></release>
+    <release date="2024-11-03" version="4.4.2"></release>
+    <release date="2024-09-26" version="4.4.1"></release>
+    <release date="2024-06-12" version="4.4"></release>
+    <release date="2023-04-29" version="4.3.1"></release>
+    <release date="2023-03-05" version="4.3"></release>
+    <release date="2022-07-09" version="4.2"></release>
     <release date="2021-02-01" version="4.1"></release>
     <release date="2020-07-10" version="4.0.5"></release>
     <release date="2020-06-01" version="4.0.4"></release>
@@ -39,9 +54,22 @@
     <release date="2016-09-22" version="3.8"></release>
   </releases>
   <screenshots>
-    <screenshot type="default">https://audacious-media-player.org/images/gtk-interface.png</screenshot>
-    <screenshot>https://audacious-media-player.org/images/winamp-interface.png</screenshot>
-    <screenshot>https://audacious-media-player.org/images/settings-window.png</screenshot>
+    <screenshot type="default">
+      <caption>Qt interface</caption>
+      <image>https://audacious-media-player.org/images/qt-interface.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>GTK interface</caption>
+      <image>https://audacious-media-player.org/images/gtk-interface.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Winamp interface</caption>
+      <image>https://audacious-media-player.org/images/winamp-interface.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Settings window</caption>
+      <image>https://audacious-media-player.org/images/settings-window.png</image>
+    </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
 </component>

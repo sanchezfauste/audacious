@@ -24,6 +24,7 @@
 #include <libaudcore/preferences.h>
 #include <libaudcore/runtime.h>
 
+#include "gtk-compat.h"
 #include "internal.h"
 #include "libaudgui.h"
 #include "libaudgui-gtk.h"
@@ -31,15 +32,18 @@
 static void open_cb (void * entry)
 {
     const char * text = gtk_entry_get_text ((GtkEntry *) entry);
+    char * url = g_strstrip (g_strdup (text));
     gboolean open = GPOINTER_TO_INT (g_object_get_data ((GObject *) entry, "open"));
 
     if (open)
-        aud_drct_pl_open (text);
+        aud_drct_pl_open (url);
     else
-        aud_drct_pl_add (text, -1);
+        aud_drct_pl_add (url, -1);
 
     if (aud_get_bool ("save_url_history"))
-        aud_history_add (text);
+        aud_history_add (url);
+
+    g_free (url);
 }
 
 static void clear_cb (void * combo)
@@ -86,14 +90,14 @@ static GtkWidget * create_url_opener (bool open)
 
     g_object_set_data ((GObject *) entry, "open", GINT_TO_POINTER (open));
 
-    GtkWidget * hbox = gtk_hbox_new (false, 6);
+    GtkWidget * hbox = audgui_hbox_new (6);
     audgui_create_widgets (hbox, widgets);
 
     GtkWidget * clear_button = audgui_button_new (_("C_lear history"),
      "edit-clear", clear_cb, combo);
     gtk_box_pack_end ((GtkBox *) hbox, clear_button, false, false, 0);
 
-    GtkWidget * vbox = gtk_vbox_new (false, 6);
+    GtkWidget * vbox = audgui_vbox_new (6);
     gtk_box_pack_start ((GtkBox *) vbox, combo, false, false, 0);
     gtk_box_pack_start ((GtkBox *) vbox, hbox, false, false, 0);
 

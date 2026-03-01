@@ -1,0 +1,45 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04,
+             macos-15-intel, macos-26,
+             windows-2022]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout audacious
+      uses: actions/checkout@v6
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ${{ matrix.os }}
+
+    - name: Configure
+      uses: ./.github/actions/run-action
+      with:
+        action: 'configure'
+        os: ${{ matrix.os }}
+
+    - name: Build
+      uses: ./.github/actions/run-action
+      with:
+        action: 'build'
+        os: ${{ matrix.os }}
+
+    - name: Test
+      if: startsWith(matrix.os, 'ubuntu')
+      uses: ./.github/actions/run-action
+      with:
+        action: 'test'
+        os: ${{ matrix.os }}

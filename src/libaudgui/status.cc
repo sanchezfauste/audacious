@@ -22,6 +22,7 @@
 #include <libaudcore/hook.h>
 #include <libaudcore/i18n.h>
 
+#include "gtk-compat.h"
 #include "internal.h"
 #include "libaudgui-gtk.h"
 
@@ -35,9 +36,10 @@ static void create_progress_window ()
     gtk_window_set_type_hint ((GtkWindow *) progress_window, GDK_WINDOW_TYPE_HINT_DIALOG);
     gtk_window_set_title ((GtkWindow *) progress_window, _("Working ..."));
     gtk_window_set_resizable ((GtkWindow *) progress_window, false);
+    gtk_window_set_role ((GtkWindow *) progress_window, "progress");
     gtk_container_set_border_width ((GtkContainer *) progress_window, 6);
 
-    GtkWidget * vbox = gtk_vbox_new (false, 6);
+    GtkWidget * vbox = audgui_vbox_new (6);
     gtk_container_add ((GtkContainer *) progress_window, vbox);
 
     progress_label = gtk_label_new (nullptr);

@@ -23,6 +23,7 @@
 #include <libaudcore/plugins.h>
 #include <libaudcore/preferences.h>
 
+#include "gtk-compat.h"
 #include "internal.h"
 #include "libaudgui.h"
 #include "libaudgui-gtk.h"
@@ -153,6 +154,7 @@ EXPORT void audgui_show_plugin_prefs (PluginHandle * plugin)
 
     GtkWidget * window = gtk_dialog_new ();
     gtk_window_set_title ((GtkWindow *) window, str_printf (_("%s Settings"), name));
+    gtk_window_set_role ((GtkWindow *) window, "plugin-settings");
 
     if (p->apply)
     {
@@ -168,7 +170,7 @@ EXPORT void audgui_show_plugin_prefs (PluginHandle * plugin)
     }
 
     GtkWidget * content = gtk_dialog_get_content_area ((GtkDialog *) window);
-    GtkWidget * box = gtk_vbox_new (false, 0);
+    GtkWidget * box = audgui_vbox_new (0);
     audgui_create_widgets_with_domain (box, p->widgets, header->info.domain);
     gtk_box_pack_start ((GtkBox *) content, box, true, true, 0);
 

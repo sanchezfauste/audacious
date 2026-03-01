@@ -1,5 +1,5 @@
 /*
- * url-opener.cc
+ * url-opener-qt.cc
  * Copyright 2015 Thomas Lange
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,7 @@ static QDialog * buildUrlDialog(bool open)
 
     auto dialog = new QDialog;
     dialog->setWindowTitle(title);
+    dialog->setWindowRole("url-dialog");
     dialog->setContentsMargins(margins.EightPt);
 
     auto label = new QLabel(_("Enter URL:"), dialog);
@@ -67,7 +68,7 @@ static QDialog * buildUrlDialog(bool open)
 
     auto clear_button =
         new QPushButton(translate_str(N_("C_lear history")), dialog);
-    clear_button->setIcon(audqt::get_icon("edit-clear"));
+    clear_button->setIcon(QIcon::fromTheme("edit-clear"));
 
     auto hbox = make_hbox(nullptr);
     prefs_populate(hbox, widgets, PACKAGE);
@@ -75,10 +76,10 @@ static QDialog * buildUrlDialog(bool open)
     hbox->addWidget(clear_button);
 
     auto button1 = new QPushButton(translate_str(verb), dialog);
-    button1->setIcon(audqt::get_icon(icon));
+    button1->setIcon(QIcon::fromTheme(icon));
 
     auto button2 = new QPushButton(translate_str(N_("_Cancel")), dialog);
-    button2->setIcon(audqt::get_icon("process-stop"));
+    button2->setIcon(QIcon::fromTheme("process-stop"));
 
     auto buttonbox = new QDialogButtonBox(dialog);
     buttonbox->addButton(button1, QDialogButtonBox::AcceptRole);
@@ -109,20 +110,20 @@ static QDialog * buildUrlDialog(bool open)
     QObject::connect(buttonbox, &QDialogButtonBox::rejected, dialog,
                      &QDialog::close);
 
-    QObject::connect(buttonbox, &QDialogButtonBox::accepted,
-                     [dialog, combobox, open]() {
-                         QByteArray url = combobox->currentText().toUtf8();
+    QObject::connect(
+        buttonbox, &QDialogButtonBox::accepted, [dialog, combobox, open]() {
+            QByteArray url = combobox->currentText().trimmed().toUtf8();
 
-                         if (open)
-                             aud_drct_pl_open(url);
-                         else
-                             aud_drct_pl_add(url, -1);
+            if (open)
+                aud_drct_pl_open(url);
+            else
+                aud_drct_pl_add(url, -1);
 
-                         if (aud_get_bool("save_url_history"))
-                             aud_history_add(url);
+            if (aud_get_bool("save_url_history"))
+                aud_history_add(url);
 
-                         dialog->close();
-                     });
+            dialog->close();
+        });
 
     return dialog;
 }

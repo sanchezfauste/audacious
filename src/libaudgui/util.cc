@@ -33,8 +33,6 @@
 #include <libaudcore/i18n.h>
 #include <libaudcore/runtime.h>
 
-#include "internal.h"
-#include "libaudgui.h"
 #include "libaudgui-gtk.h"
 
 #define PORTABLE_DPI 96
@@ -89,16 +87,44 @@ EXPORT int audgui_get_digit_width (GtkWidget * widget)
 
 EXPORT void audgui_get_mouse_coords (GtkWidget * widget, int * x, int * y)
 {
+#ifdef USE_GTK3
+    int xwin, ywin;
+    GdkRectangle alloc;
+
+    GdkWindow * window = gtk_widget_get_window (widget);
+    GdkDisplay * display = gdk_window_get_display (window);
+    GdkSeat * seat = gdk_display_get_default_seat (display);
+    GdkDevice * device = gdk_seat_get_pointer (seat);
+
+    gdk_window_get_device_position (window, device, & xwin, & ywin, nullptr);
+    gtk_widget_get_allocation (widget, & alloc);
+
+    * x = xwin - alloc.x;
+    * y = ywin - alloc.y;
+#else
     gtk_widget_get_pointer (widget, x, y);
+#endif
 }
 
 EXPORT void audgui_get_mouse_coords (GdkScreen * screen, int * x, int * y)
 {
-    gdk_display_get_pointer (gdk_screen_get_display (screen), nullptr, x, y, nullptr);
+    GdkDisplay * display = gdk_screen_get_display (screen);
+#ifdef USE_GTK3
+    GdkSeat * seat = gdk_display_get_default_seat (display);
+    GdkDevice * device = gdk_seat_get_pointer (seat);
+    gdk_device_get_position (device, nullptr, x, y);
+#else
+    gdk_display_get_pointer (display, nullptr, x, y, nullptr);
+#endif
 }
 
 EXPORT void audgui_get_monitor_geometry (GdkScreen * screen, int x, int y, GdkRectangle * geom)
 {
+#ifdef USE_GTK3
+    GdkDisplay * display = gdk_screen_get_display (screen);
+    GdkMonitor * monitor = gdk_display_get_monitor_at_point (display, x, y);
+    gdk_monitor_get_geometry (monitor, geom);
+#else
     int monitors = gdk_screen_get_n_monitors (screen);
 
     for (int i = 0; i < monitors; i ++)
@@ -113,6 +139,7 @@ EXPORT void audgui_get_monitor_geometry (GdkScreen * screen, int x, int y, GdkRe
     geom->y = 0;
     geom->width = gdk_screen_get_width (screen);
     geom->height = gdk_screen_get_height (screen);
+#endif
 }
 
 static gboolean escape_destroy_cb (GtkWidget * widget, GdkEventKey * event)
@@ -225,11 +252,28 @@ EXPORT void audgui_file_entry_set_uri (GtkWidget * entry, const char * uri)
     gtk_editable_set_position ((GtkEditable *) entry, -1);
 }
 
-static void set_label_wrap (GtkWidget * label, void *)
+static void set_label_properties (GtkWidget * label, void * label_selectable)
 {
     if (GTK_IS_LABEL (label))
+    {
+        gtk_label_set_selectable ((GtkLabel *) label, GPOINTER_TO_INT (label_selectable));
         gtk_label_set_line_wrap_mode ((GtkLabel *) label, PANGO_WRAP_WORD_CHAR);
+    }
 }
+
+#ifdef USE_GTK3
+static const char * icon_for_message_type (GtkMessageType type)
+{
+    switch (type)
+    {
+        case GTK_MESSAGE_INFO: return "dialog-information";
+        case GTK_MESSAGE_WARNING: return "dialog-warning";
+        case GTK_MESSAGE_QUESTION: return "dialog-question";
+        case GTK_MESSAGE_ERROR: return "dialog-error";
+        default: return nullptr;
+    }
+}
+#endif
 
 EXPORT GtkWidget * audgui_dialog_new (GtkMessageType type, const char * title,
  const char * text, GtkWidget * button1, GtkWidget * button2)
@@ -237,9 +281,23 @@ EXPORT GtkWidget * audgui_dialog_new (GtkMessageType type, const char * title,
     GtkWidget * dialog = gtk_message_dialog_new (nullptr, (GtkDialogFlags) 0, type,
      GTK_BUTTONS_NONE, "%s", text);
     gtk_window_set_title ((GtkWindow *) dialog, title);
+    gtk_window_set_role ((GtkWindow *) dialog, "message");
 
+    bool label_selectable = (type != GTK_MESSAGE_OTHER);
     GtkWidget * box = gtk_message_dialog_get_message_area ((GtkMessageDialog *) dialog);
-    gtk_container_foreach ((GtkContainer *) box, set_label_wrap, nullptr);
+    gtk_container_foreach ((GtkContainer *) box, set_label_properties,
+     GINT_TO_POINTER (label_selectable));
+
+#ifdef USE_GTK3
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+    const char * icon = icon_for_message_type (type);
+    if (icon)
+    {
+        GtkWidget * image = gtk_image_new_from_icon_name (icon, GTK_ICON_SIZE_DIALOG);
+        gtk_message_dialog_set_image ((GtkMessageDialog *) dialog, image);
+    }
+G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
 
     if (button2)
     {

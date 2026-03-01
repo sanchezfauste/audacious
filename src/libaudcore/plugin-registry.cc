@@ -26,7 +26,6 @@
 
 #include "audstrings.h"
 #include "i18n.h"
-#include "interface.h"
 #include "parse.h"
 #include "plugin.h"
 #include "runtime.h"
@@ -103,6 +102,7 @@ static constexpr aud::array<InputKey, const char *> input_key_names = {
 
 static aud::array<PluginType, Index<PluginHandle *>> plugins;
 static aud::array<PluginType, Index<PluginHandle *>> compatible;
+static aud::array<PluginType, Index<PluginHandle *>> sorted; /* by name */
 static aud::mutex mutex;
 static bool modified = false;
 
@@ -208,6 +208,9 @@ void plugin_registry_cleanup()
     }
 
     for (auto & list : compatible)
+        list.clear();
+
+    for (auto & list : sorted)
         list.clear();
 }
 
@@ -442,8 +445,14 @@ void plugin_registry_prune()
     {
         plugins[type].remove_if(check_not_found);
         plugins[type].sort(plugin_compare);
+
         compatible[type].insert(plugins[type].begin(), 0, plugins[type].len());
         compatible[type].remove_if(check_incompatible);
+
+        sorted[type].insert(compatible[type].begin(), 0, compatible[type].len());
+        sorted[type].sort([](PluginHandle * a, PluginHandle * b) {
+            return str_compare(aud_plugin_get_name(a), aud_plugin_get_name(b));
+        });
     }
 }
 
@@ -623,6 +632,11 @@ EXPORT const Index<PluginHandle *> & aud_plugin_list(PluginType type)
     return compatible[type];
 }
 
+EXPORT const Index<PluginHandle *> & aud_plugin_list_sorted(PluginType type)
+{
+    return sorted[type];
+}
+
 EXPORT const char * aud_plugin_get_name(PluginHandle * plugin)
 {
     return dgettext(plugin->domain, plugin->name);
@@ -650,6 +664,11 @@ static void plugin_call_watches(PluginHandle * plugin)
     };
 
     plugin->watches.remove_if(call_and_check_remove);
+}
+
+int plugin_get_priority(PluginHandle * plugin)
+{
+    return plugin->priority;
 }
 
 PluginEnabled plugin_get_enabled(PluginHandle * plugin)
@@ -745,32 +764,42 @@ bool input_plugin_can_write_tuple(PluginHandle * plugin)
     return plugin->writes_tag;
 }
 
-EXPORT Index<const char *> aud_plugin_get_supported_mime_types()
+static Index<const char *> input_plugins_get_supported_formats(InputKey key)
 {
-    Index<const char *> mimes;
+    Index<const char *> result;
 
     for (PluginHandle * p : aud_plugin_list(PluginType::Input))
     {
         if (!aud_plugin_get_enabled(p))
             continue;
 
-        for (auto & k : p->keys[InputKey::MIME])
-            mimes.append((const char *)k);
+        for (auto & k : p->keys[key])
+            result.append((const char *)k);
     }
 
     /* sort and remove duplicates */
     /* lambda needed to avoid -Wnoexcept-type with GCC */
-    mimes.sort([](const char * a, const char * b) { return strcmp(a, b); });
+    result.sort([](const char * a, const char * b) { return strcmp(a, b); });
 
-    int len = mimes.len();
+    int len = result.len();
     for (int i = 0; i + 1 < len; i++)
     {
-        if (!strcmp(mimes[i], mimes[i + 1]))
-            mimes[i] = nullptr;
+        if (!strcmp(result[i], result[i + 1]))
+            result[i] = nullptr;
     }
 
-    mimes.remove_if([](const char * m) { return m == nullptr; });
-    mimes.append(nullptr);
+    result.remove_if([](const char * m) { return m == nullptr; });
+    result.append(nullptr);
 
-    return mimes;
+    return result;
+}
+
+EXPORT Index<const char *> aud_plugin_get_supported_extensions()
+{
+    return input_plugins_get_supported_formats(InputKey::Ext);
+}
+
+EXPORT Index<const char *> aud_plugin_get_supported_mime_types()
+{
+    return input_plugins_get_supported_formats(InputKey::MIME);
 }

@@ -35,6 +35,7 @@
 
 #include "libguess/libguess.h"
 
+#include "gtk-compat.h"
 #include "internal.h"
 #include "libaudgui.h"
 #include "libaudgui-gtk.h"
@@ -80,11 +81,11 @@ enum {
 /* keep this in sync with the list in load_fallback_icons (init.cc) */
 static const Category categories[] = {
     { "applications-graphics", N_("Appearance") },
-    { "audio-volume-medium", N_("Audio") },
+    { "multimedia-volume-control", N_("Audio") },
     { "applications-internet", N_("Network") },
     { "audio-x-generic", N_("Playlist")} ,
     { "dialog-information", N_("Song Info") },
-    { "applications-system", N_("Plugins") },
+    { "preferences-other", N_("Plugins") },
     { "preferences-system", N_("Advanced") }
 };
 
@@ -111,7 +112,8 @@ static const TitleFieldTag title_field_tags[] = {
     { N_("Year")        , "${year}" },
     { N_("Comment")     , "${comment}" },
     { N_("Codec")       , "${codec}" },
-    { N_("Quality")     , "${quality}" }
+    { N_("Quality")     , "${quality}" },
+    { N_("Disc number") , "${disc-number}" }
 };
 
 static const ComboItem chardet_detector_presets[] = {
@@ -171,7 +173,7 @@ static void iface_combo_changed ();
 static void * iface_create_prefs_box ();
 
 static const PreferencesWidget appearance_page_widgets[] = {
-    WidgetLabel (N_("Audacious is running in GTK (legacy) mode.")),
+    WidgetLabel (N_("Audacious is running in GTK mode.")),
 #ifdef USE_QT
     WidgetBox ({{iface_restart_widgets}, true}, WIDGET_CHILD),
 #else
@@ -389,7 +391,7 @@ static const PreferencesWidget advanced_page_widgets[] = {
         {1, 25, 1, N_("percent")})
 };
 
-#define TITLESTRING_NPRESETS 8
+#define TITLESTRING_NPRESETS 10
 
 static const char * const titlestring_presets[TITLESTRING_NPRESETS] = {
     "${title}",
@@ -399,6 +401,8 @@ static const char * const titlestring_presets[TITLESTRING_NPRESETS] = {
     "${?artist:${artist} - }${?album:${album} - }${title}",
     "${?artist:${artist} - }${?album:${album} - }${?track-number:${track-number}. }${title}",
     "${?artist:${artist} }${?album:[ ${album} ] }${?artist:- }${?track-number:${track-number}. }${title}",
+    "${?artist:${artist} - }${?album:${album} - }${?disc-number:${disc-number}. }${?track-number:${track-number}. }${title}",
+    "${?artist:${artist} }${?album:[ ${album} ] }${?artist:- }${?disc-number:${disc-number}. }${?track-number:${track-number}. }${title}",
     "${?album:${album} - }${title}"
 };
 
@@ -410,6 +414,8 @@ static const char * const titlestring_preset_names[TITLESTRING_NPRESETS] = {
     N_("ARTIST - ALBUM - TITLE"),
     N_("ARTIST - ALBUM - TRACK. TITLE"),
     N_("ARTIST [ ALBUM ] - TRACK. TITLE"),
+    N_("ARTIST - ALBUM - DISC.TRACK. TITLE"),
+    N_("ARTIST [ ALBUM ] - DISC.TRACK. TITLE"),
     N_("ALBUM - TITLE")
 };
 
@@ -469,9 +475,13 @@ static void titlestring_tag_menu_cb (GtkMenuItem * menuitem, void * data)
     gtk_editable_set_position ((GtkEditable *) titlestring_entry, pos);
 }
 
-static void on_titlestring_help_button_clicked (GtkButton * button, void * menu)
+static void on_titlestring_help_button_clicked (GtkWidget * button, void * menu)
 {
+#ifdef USE_GTK3
+    gtk_menu_popup_at_widget ((GtkMenu *) menu, button, GDK_GRAVITY_CENTER, GDK_GRAVITY_STATIC, nullptr);
+#else
     gtk_menu_popup ((GtkMenu *) menu, nullptr, nullptr, nullptr, nullptr, 0, GDK_CURRENT_TIME);
+#endif
 }
 
 static void update_titlestring_cbox (GtkComboBox * cbox, const char * format)
@@ -501,7 +511,7 @@ static void on_titlestring_cbox_changed (GtkComboBox * cbox, GtkEntry * entry)
         gtk_entry_set_text (entry, titlestring_presets[preset]);
 }
 
-static void fill_category_list (GtkTreeView * treeview, GtkNotebook * notebook)
+static void fill_category_list (GtkTreeView * treeview)
 {
     GtkTreeViewColumn * column = gtk_tree_view_column_new ();
     gtk_tree_view_column_set_title (column, _("Category"));
@@ -510,18 +520,16 @@ static void fill_category_list (GtkTreeView * treeview, GtkNotebook * notebook)
 
     GtkCellRenderer * renderer = gtk_cell_renderer_pixbuf_new ();
     gtk_tree_view_column_pack_start (column, renderer, false);
-    gtk_tree_view_column_set_attributes (column, renderer, "pixbuf", 0, nullptr);
+    gtk_tree_view_column_set_attributes (column, renderer, "icon-name", 0, nullptr);
+    g_object_set (renderer, "stock-size", GTK_ICON_SIZE_DIALOG, nullptr);
 
     renderer = gtk_cell_renderer_text_new ();
     gtk_tree_view_column_pack_start (column, renderer, false);
     gtk_tree_view_column_set_attributes (column, renderer, "text", 1, nullptr);
 
     GtkListStore * store = gtk_list_store_new (CATEGORY_VIEW_N_COLS,
-     GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_INT);
+     G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT);
     gtk_tree_view_set_model (treeview, (GtkTreeModel *) store);
-
-    GtkIconTheme * icon_theme = gtk_icon_theme_get_default ();
-    int icon_size = audgui_to_native_dpi (48);
 
     for (const Category & category : categories)
     {
@@ -531,13 +539,7 @@ static void fill_category_list (GtkTreeView * treeview, GtkNotebook * notebook)
         GtkTreeIter iter;
         gtk_list_store_append (store, & iter);
         gtk_list_store_set (store, & iter, CATEGORY_VIEW_COL_NAME,
-         gettext (category.name), -1);
-
-        AudguiPixbuf img (gtk_icon_theme_load_icon (icon_theme,
-         category.icon, icon_size, (GtkIconLookupFlags) 0, nullptr));
-
-        if (img)
-            gtk_list_store_set (store, & iter, CATEGORY_VIEW_COL_ICON, img.get (), -1);
+         _(category.name), CATEGORY_VIEW_COL_ICON, category.icon, -1);
     }
 
     g_object_unref (store);
@@ -582,29 +584,19 @@ static void create_titlestring_widgets (GtkWidget * * cbox, GtkWidget * * entry)
 
 static void * create_titlestring_table ()
 {
-    GtkWidget * grid = gtk_table_new (0, 0, false);
-    gtk_table_set_row_spacings ((GtkTable *) grid, 6);
-    gtk_table_set_col_spacings ((GtkTable *) grid, 6);
+    GtkWidget * grid = audgui_grid_new ();
+    audgui_grid_set_row_spacing (grid, 6);
+    audgui_grid_set_column_spacing (grid, 6);
 
-    GtkWidget * label = gtk_label_new (_("Title format:"));
-    gtk_misc_set_alignment ((GtkMisc *) label, 1, 0.5);
-    gtk_table_attach ((GtkTable *) grid, label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-
-    label = gtk_label_new (_("Custom string:"));
-    gtk_misc_set_alignment ((GtkMisc *) label, 1, 0.5);
-    gtk_table_attach ((GtkTable *) grid, label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
+    GtkWidget * format_label = gtk_label_new (_("Title format:"));
+    GtkWidget * custom_label = gtk_label_new (_("Custom string:"));
 
     GtkWidget * titlestring_cbox;
     create_titlestring_widgets (& titlestring_cbox, & titlestring_entry);
-    gtk_table_attach_defaults ((GtkTable *) grid, titlestring_cbox, 1, 2, 0, 1);
-    gtk_table_attach_defaults ((GtkTable *) grid, titlestring_entry, 1, 2, 1, 2);
 
     GtkWidget * titlestring_help_button = gtk_button_new ();
     gtk_widget_set_can_focus (titlestring_help_button, false);
-    gtk_button_set_focus_on_click ((GtkButton *) titlestring_help_button, false);
     gtk_button_set_relief ((GtkButton *) titlestring_help_button, GTK_RELIEF_HALF);
-    gtk_table_attach ((GtkTable *) grid, titlestring_help_button, 2, 3, 1, 2,
-     GTK_FILL, GTK_FILL, 0, 0);
 
     GtkWidget * titlestring_tag_menu = create_titlestring_tag_menu ();
 
@@ -614,19 +606,49 @@ static void * create_titlestring_table ()
     GtkWidget * image = gtk_image_new_from_icon_name ("list-add", GTK_ICON_SIZE_MENU);
     gtk_container_add ((GtkContainer *) titlestring_help_button, image);
 
+#ifdef USE_GTK3
+    gtk_label_set_justify ((GtkLabel *) format_label, GTK_JUSTIFY_RIGHT);
+    gtk_label_set_justify ((GtkLabel *) custom_label, GTK_JUSTIFY_RIGHT);
+
+    gtk_widget_set_halign (format_label, GTK_ALIGN_END);
+    gtk_widget_set_halign (custom_label, GTK_ALIGN_END);
+
+    gtk_widget_set_hexpand (titlestring_cbox, true);
+    gtk_widget_set_hexpand (titlestring_entry, true);
+
+    gtk_widget_set_focus_on_click (titlestring_help_button, false);
+
+    gtk_grid_attach ((GtkGrid *) grid, format_label, 0, 0, 1, 1);
+    gtk_grid_attach ((GtkGrid *) grid, custom_label, 0, 1, 1, 1);
+    gtk_grid_attach ((GtkGrid *) grid, titlestring_cbox, 1, 0, 1, 1);
+    gtk_grid_attach ((GtkGrid *) grid, titlestring_entry, 1, 1, 1, 1);
+    gtk_grid_attach ((GtkGrid *) grid, titlestring_help_button, 2, 1, 1, 1);
+#else
+    gtk_misc_set_alignment ((GtkMisc *) format_label, 1, 0.5);
+    gtk_misc_set_alignment ((GtkMisc *) custom_label, 1, 0.5);
+
+    gtk_button_set_focus_on_click ((GtkButton *) titlestring_help_button, false);
+
+    gtk_table_attach ((GtkTable *) grid, format_label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+    gtk_table_attach ((GtkTable *) grid, custom_label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
+    gtk_table_attach_defaults ((GtkTable *) grid, titlestring_cbox, 1, 2, 0, 1);
+    gtk_table_attach_defaults ((GtkTable *) grid, titlestring_entry, 1, 2, 1, 2);
+    gtk_table_attach ((GtkTable *) grid, titlestring_help_button, 2, 3, 1, 2,
+     GTK_FILL, GTK_FILL, 0, 0);
+#endif
     return grid;
 }
 
 static void create_playlist_category ()
 {
-    GtkWidget * vbox = gtk_vbox_new (false, 0);
+    GtkWidget * vbox = audgui_vbox_new (0);
     gtk_container_add ((GtkContainer *) category_notebook, vbox);
     audgui_create_widgets (vbox, playlist_page_widgets);
 }
 
 static void create_song_info_category ()
 {
-    GtkWidget * vbox = gtk_vbox_new (false, 0);
+    GtkWidget * vbox = audgui_vbox_new (0);
     gtk_container_add ((GtkContainer *) category_notebook, vbox);
     audgui_create_widgets (vbox, song_info_page_widgets);
 }
@@ -669,14 +691,14 @@ static ArrayRef<ComboItem> iface_combo_fill ()
 
 static void * iface_create_prefs_box ()
 {
-    iface_prefs_box = gtk_vbox_new (false, 0);
+    iface_prefs_box = audgui_vbox_new (0);
     iface_fill_prefs_box ();
     return iface_prefs_box;
 }
 
 static void create_appearance_category ()
 {
-    GtkWidget * vbox = gtk_vbox_new (false, 0);
+    GtkWidget * vbox = audgui_vbox_new (0);
     gtk_container_add ((GtkContainer *) category_notebook, vbox);
     audgui_create_widgets (vbox, appearance_page_widgets);
 }
@@ -807,17 +829,17 @@ static void record_update (void * = nullptr, void * = nullptr)
 
 static void create_audio_category ()
 {
-    GtkWidget * audio_page_vbox = gtk_vbox_new (false, 0);
+    GtkWidget * audio_page_vbox = audgui_vbox_new (0);
     audgui_create_widgets (audio_page_vbox, audio_page_widgets);
     gtk_container_add ((GtkContainer *) category_notebook, audio_page_vbox);
 }
 
 static void create_connectivity_category ()
 {
-    GtkWidget * connectivity_page_vbox = gtk_vbox_new (false, 0);
+    GtkWidget * connectivity_page_vbox = audgui_vbox_new (0);
     gtk_container_add ((GtkContainer *) category_notebook, connectivity_page_vbox);
 
-    GtkWidget * vbox = gtk_vbox_new (false, 0);
+    GtkWidget * vbox = audgui_vbox_new (0);
     gtk_box_pack_start ((GtkBox *) connectivity_page_vbox, vbox, true, true, 0);
 
     audgui_create_widgets (vbox, connectivity_page_widgets);
@@ -827,6 +849,7 @@ static void create_plugin_category ()
 {
     plugin_notebook = gtk_notebook_new ();
     gtk_container_add ((GtkContainer *) category_notebook, plugin_notebook);
+    gtk_notebook_set_scrollable ((GtkNotebook *) plugin_notebook, true);
 
     for (const PluginCategory & category : plugin_categories)
         gtk_notebook_append_page ((GtkNotebook *) plugin_notebook,
@@ -835,7 +858,7 @@ static void create_plugin_category ()
 
 static void create_advanced_category ()
 {
-    GtkWidget * advanced_page_vbox = gtk_vbox_new (false, 0);
+    GtkWidget * advanced_page_vbox = audgui_vbox_new (0);
     audgui_create_widgets (advanced_page_vbox, advanced_page_widgets);
     gtk_container_add ((GtkContainer *) category_notebook, advanced_page_vbox);
 }
@@ -859,11 +882,12 @@ static void create_prefs_window ()
     gtk_window_set_type_hint ((GtkWindow *) prefswin, GDK_WINDOW_TYPE_HINT_DIALOG);
     gtk_container_set_border_width ((GtkContainer *) prefswin, 12);
     gtk_window_set_title ((GtkWindow *) prefswin, _("Audacious Settings"));
+    gtk_window_set_role ((GtkWindow *) prefswin, "settings");
 
-    GtkWidget * vbox = gtk_vbox_new (false, 0);
+    GtkWidget * vbox = audgui_vbox_new (0);
     gtk_container_add ((GtkContainer *) prefswin, vbox);
 
-    GtkWidget * hbox = gtk_hbox_new (false, 6);
+    GtkWidget * hbox = audgui_hbox_new (6);
     gtk_box_pack_start ((GtkBox *) vbox, hbox, true, true, 0);
 
     GtkWidget * scrolledwindow = gtk_scrolled_window_new (nullptr, nullptr);
@@ -894,17 +918,17 @@ static void create_prefs_window ()
     create_plugin_category ();
     create_advanced_category ();
 
-    GtkWidget * hseparator = gtk_hseparator_new ();
+    GtkWidget * hseparator = audgui_separator_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_pack_start ((GtkBox *) vbox, hseparator, false, false, 6);
 
-    hbox = gtk_hbox_new (false, 0);
+    hbox = audgui_hbox_new (0);
     gtk_box_pack_start ((GtkBox *) vbox, hbox, false, false, 0);
 
     GtkWidget * audversionlabel = gtk_label_new (aud_version_string);
     gtk_box_pack_start ((GtkBox *) hbox, audversionlabel, false, false, 0);
     gtk_label_set_use_markup ((GtkLabel *) audversionlabel, true);
 
-    GtkWidget * prefswin_button_box = gtk_hbutton_box_new ();
+    GtkWidget * prefswin_button_box = audgui_button_box_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_pack_start ((GtkBox *) hbox, prefswin_button_box, true, true, 0);
     gtk_button_box_set_layout ((GtkButtonBox *) prefswin_button_box, GTK_BUTTONBOX_END);
     gtk_box_set_spacing ((GtkBox *) prefswin_button_box, 6);
@@ -914,7 +938,7 @@ static void create_prefs_window ()
     gtk_container_add ((GtkContainer *) prefswin_button_box, close);
     gtk_widget_set_can_default (close, true);
 
-    fill_category_list ((GtkTreeView *) category_treeview, (GtkNotebook *) category_notebook);
+    fill_category_list ((GtkTreeView *) category_treeview);
 
     record_update ();
     hook_associate ("enable record", record_update, nullptr);

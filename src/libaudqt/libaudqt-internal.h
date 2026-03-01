@@ -25,9 +25,18 @@
 class QPoint;
 class QScreen;
 class QString;
+class QStyle;
 
 namespace audqt
 {
+
+/* audqt.cc */
+void set_icon_theme();
+
+/* dark-theme.cc */
+QStyle *create_dark_style();
+void enable_dark_theme();
+void disable_dark_theme();
 
 /* dock.cc */
 void dock_show_simple(const char * id, const char * name, QWidget * create());

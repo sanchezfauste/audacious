@@ -1,6 +1,7 @@
 audacious_deps = [glib_dep, thread_dep]
 audacious_libs = [libaudcore_lib]
 audacious_incs = [src_inc]
+audacious_kwargs = {}
 
 audacious_sources = [
   'main.cc',
@@ -17,10 +18,23 @@ if get_option('dbus')
 endif
 
 
+if have_windows
+  windows = import('windows')
+  audacious_sources += windows.compile_resources('audacious.rc',
+    include_directories: meson.current_build_dir()
+  )
+
+  if meson.version().version_compare('>= 0.56')
+    audacious_kwargs += {'win_subsystem': 'windows'}
+  endif
+endif
+
+
 audacious_exe = executable('audacious',
   audacious_sources,
   include_directories: audacious_incs,
   dependencies: audacious_deps,
   link_with: audacious_libs,
-  install: true
+  install: true,
+  kwargs: audacious_kwargs
 )

@@ -18,6 +18,7 @@
  */
 
 #include "treeview.h"
+#include "libaudqt.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -44,9 +45,7 @@ class TreeViewStyleOverrides : public QProxyStyle
 public:
     TreeViewStyleOverrides()
     {
-        // detect and respond to application-wide style change
-        connect(qApp->style(), &QObject::destroyed, this,
-                &TreeViewStyleOverrides::resetBaseStyle);
+        setup_proxy_style(this);
     }
 
     int styleHint(StyleHint hint, const QStyleOption * option = nullptr,
@@ -77,14 +76,6 @@ public:
 
         QProxyStyle::drawPrimitive(element, option, painter, widget);
     }
-
-private:
-    void resetBaseStyle()
-    {
-        setBaseStyle(nullptr);
-        connect(qApp->style(), &QObject::destroyed, this,
-                &TreeViewStyleOverrides::resetBaseStyle);
-    }
 };
 
 EXPORT TreeView::TreeView(QWidget * parent) : QTreeView(parent)
@@ -92,8 +83,6 @@ EXPORT TreeView::TreeView(QWidget * parent) : QTreeView(parent)
     auto style = new TreeViewStyleOverrides;
     style->setParent(this);
     setStyle(style);
-
-    connect(this, &QTreeView::activated, this, &TreeView::activate);
 }
 
 EXPORT TreeView::~TreeView() {}
@@ -125,16 +114,6 @@ EXPORT void TreeView::removeSelectedRows()
     auto m = model();
     for (int row : rows)
         m->removeRow(row);
-}
-
-EXPORT void TreeView::mouseDoubleClickEvent(QMouseEvent * event)
-{
-    QTreeView::mouseDoubleClickEvent(event);
-}
-
-EXPORT void TreeView::activate(const QModelIndex & index)
-{
-    (void)index; // base implementation does nothing
 }
 
 } // namespace audqt

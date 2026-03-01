@@ -25,6 +25,7 @@
 #include <libaudcore/playlist.h>
 #include <libaudcore/runtime.h>
 
+#include "gtk-compat.h"
 #include "internal.h"
 #include "libaudgui.h"
 #include "libaudgui-gtk.h"
@@ -138,6 +139,13 @@ static gboolean keypress_cb (GtkWidget * widget, GdkEventKey * event)
         return true;
     }
 
+    if (event->keyval == GDK_KEY_Return && (event->state & GDK_SHIFT_MASK))
+    {
+        /* Let Shift+Enter act as another shortcut for the Queue button */
+        gtk_widget_activate (queue_button);
+        return true;
+    }
+
     return false;
 }
 
@@ -145,7 +153,11 @@ static void fill_list ()
 {
     g_return_if_fail (treeview && filter_entry);
 
-    search_matches = cache.search (gtk_entry_get_text ((GtkEntry *) filter_entry));
+    const char * text = gtk_entry_get_text ((GtkEntry *) filter_entry);
+    const char * icon_name = text[0] ? "edit-clear" : nullptr;
+    g_object_set (filter_entry, "secondary-icon-name", icon_name, nullptr);
+
+    search_matches = cache.search (text);
 
     audgui_list_delete_rows (treeview, 0, audgui_list_row_count (treeview));
     audgui_list_insert_rows (treeview, 0, search_matches->len ());
@@ -211,7 +223,6 @@ static void list_get_value (void * user, int row, int column, GValue * value)
     g_return_if_fail (column >= 0 && column < 2);
     g_return_if_fail (row >= 0 && row < search_matches->len ());
 
-    auto playlist = Playlist::active_playlist ();
     int entry = (* search_matches)[row].entry;
 
     switch (column)
@@ -220,6 +231,7 @@ static void list_get_value (void * user, int row, int column, GValue * value)
         g_value_set_int (value, 1 + entry);
         break;
     case 1:
+        auto playlist = Playlist::active_playlist ();
         Tuple tuple = playlist.entry_tuple (entry, Playlist::NoWait);
         g_value_set_string (value, tuple.get_str (Tuple::FormattedTitle));
         break;
@@ -238,6 +250,7 @@ static GtkWidget * create_window ()
     gtk_window_set_type_hint ((GtkWindow *) jump_to_track_win, GDK_WINDOW_TYPE_HINT_DIALOG);
 
     gtk_window_set_title ((GtkWindow *) jump_to_track_win, _("Jump to Song"));
+    gtk_window_set_role ((GtkWindow *) jump_to_track_win, "jump-to-song");
 
     g_signal_connect (jump_to_track_win, "key_press_event", (GCallback) keypress_cb, nullptr);
     g_signal_connect (jump_to_track_win, "destroy", (GCallback) destroy_cb, nullptr);
@@ -245,7 +258,7 @@ static GtkWidget * create_window ()
     gtk_container_set_border_width ((GtkContainer *) jump_to_track_win, 10);
     gtk_window_set_default_size ((GtkWindow *) jump_to_track_win, 6 * dpi, 5 * dpi);
 
-    GtkWidget * vbox = gtk_vbox_new (false, 6);
+    GtkWidget * vbox = audgui_vbox_new (6);
     gtk_container_add ((GtkContainer *) jump_to_track_win, vbox);
 
     treeview = audgui_list_new (& callbacks, nullptr, 0);
@@ -258,17 +271,14 @@ static GtkWidget * create_window ()
      "changed", (GCallback) selection_changed, nullptr);
     g_signal_connect (treeview, "row-activated", (GCallback) do_jump, nullptr);
 
-    GtkWidget * hbox = gtk_hbox_new (false, 6);
+    GtkWidget * hbox = audgui_hbox_new (6);
     gtk_box_pack_start ((GtkBox *) vbox, hbox, false, false, 3);
 
     /* filter box */
-    GtkWidget * search_label = gtk_label_new (_("Filter: "));
-    gtk_label_set_markup_with_mnemonic ((GtkLabel *) search_label, _("_Filter:"));
+    GtkWidget * search_label = gtk_label_new_with_mnemonic (_("_Filter:"));
     gtk_box_pack_start ((GtkBox *) hbox, search_label, false, false, 0);
 
     filter_entry = gtk_entry_new ();
-    gtk_entry_set_icon_from_icon_name ((GtkEntry *) filter_entry,
-     GTK_ENTRY_ICON_SECONDARY, "edit-clear");
     gtk_label_set_mnemonic_widget ((GtkLabel *) search_label, filter_entry);
     g_signal_connect (filter_entry, "changed", (GCallback) fill_list, nullptr);
     g_signal_connect (filter_entry, "icon-press", (GCallback) filter_icon_cb, nullptr);
@@ -282,17 +292,22 @@ static GtkWidget * create_window ()
     gtk_scrolled_window_set_shadow_type ((GtkScrolledWindow *) scrollwin, GTK_SHADOW_IN);
     gtk_box_pack_start ((GtkBox *) vbox, scrollwin, true, true, 0);
 
-    GtkWidget * hbox2 = gtk_hbox_new (false, 0);
+    GtkWidget * hbox2 = audgui_hbox_new (0);
     gtk_box_pack_end ((GtkBox *) vbox, hbox2, false, false, 0);
 
-    GtkWidget * bbox = gtk_hbutton_box_new ();
+    GtkWidget * bbox = audgui_button_box_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_button_box_set_layout ((GtkButtonBox *) bbox, GTK_BUTTONBOX_END);
     gtk_box_set_spacing ((GtkBox *) bbox, 6);
 
+#ifdef USE_GTK3
+    gtk_widget_set_margin_start (bbox, 6);
+    gtk_box_pack_end ((GtkBox *) hbox2, bbox, true, true, 0);
+#else
     GtkWidget * alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
     gtk_alignment_set_padding ((GtkAlignment *) alignment, 0, 0, 6, 0);
     gtk_container_add ((GtkContainer *) alignment, bbox);
     gtk_box_pack_end ((GtkBox *) hbox2, alignment, true, true, 0);
+#endif
 
     /* close dialog toggle */
     GtkWidget * toggle = gtk_check_button_new_with_mnemonic (_("C_lose on jump"));

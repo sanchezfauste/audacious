@@ -26,6 +26,8 @@
 #ifndef LIBAUDCORE_TUPLE_H
 #define LIBAUDCORE_TUPLE_H
 
+#include <stdint.h>
+
 #include <libaudcore/objects.h>
 
 struct ReplayGainInfo;
@@ -53,23 +55,30 @@ public:
         Title = 0,   /* Song title */
         Artist,      /* Song artist */
         Album,       /* Album name */
-        AlbumArtist, /* Artist for entire album, if different than song artist
-                      */
+        AlbumArtist, /* Artist for entire album, if different than song artist */
         Comment,     /* Freeform comment */
+        Description, /* Song description */
         Genre,       /* Song's genre */
         Year,        /* Year of production, performance, etc. */
+        Lyrics,      /* Song lyrics */
 
         Composer,  /* Composer, if different than artist */
         Performer, /* Performer, if different than artist */
+        Publisher, /* Publisher */
         Copyright, /* Copyright declaration */
         Date,      /* Date of production, performance, etc. */
 
-        Track,  /* Track number */
-        Length, /* Track length in milliseconds */
+        Track,      /* Track number */
+        Length,     /* Track length in milliseconds */
+        CatalogNum, /* Catalog number */
+        Disc,       /* Disc number */
 
-        Bitrate, /* Bitrate in kilobits (1000 bits)/sec */
-        Codec,   /* Codec name, such as "Ogg Vorbis" */
-        Quality, /* String representing quality, such as "Stereo, 44 kHz" */
+        MusicBrainzID, /* MusicBrainz identifier */
+
+        Bitrate,  /* Bitrate in kilobits (1000 bits)/sec */
+        Channels, /* Track channel count */
+        Codec,    /* Codec name, such as "Ogg Vorbis" */
+        Quality,  /* String representing quality, such as "Stereo, 44 kHz" */
 
         Basename, /* Base filename, not including the folder path */
         Path,     /* Folder path, including the trailing "/" */
@@ -102,10 +111,8 @@ public:
            field */
         FormattedTitle,
 
-        /* TODO: reorder these at next ABI break! */
-        Description,   /* Track description */
-        MusicBrainzID, /* MusicBrainz identifier */
-        Channels, /* Track channels count */
+        FileCreated,  /* File creation datetime (Unix epoch) */
+        FileModified, /* File modification datetime (Unix epoch) */
 
         n_fields
     };
@@ -116,6 +123,7 @@ public:
     {
         String,
         Int,
+        DateTime,
         Empty
     };
 
@@ -159,6 +167,9 @@ public:
     /* Returns the string value of a field if set, otherwise null. */
     ::String get_str(Field field) const;
 
+    /* Returns the int64 value of a field if set, otherwise -1. */
+    int64_t get_int64(Field field) const;
+
     /* Sets a field to the integer value <x>. */
     void set_int(Field field, int x);
 
@@ -166,6 +177,9 @@ public:
      * will be converted according to the user's character set detection rules.
      * Equivalent to unset() if <str> is null. */
     void set_str(Field field, const char * str);
+
+    /* Sets a field to the int64 value <x>. */
+    void set_int64(Field field, int64_t x);
 
     /* Clears any value that a field is currently set to. */
     void unset(Field field);

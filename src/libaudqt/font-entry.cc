@@ -20,6 +20,9 @@
 
 #include "libaudqt.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #include <QAction>
 #include <QFontDialog>
 #include <QLineEdit>
@@ -36,7 +39,7 @@ class FontEntry : public QLineEdit
 public:
     FontEntry(QWidget * parent = nullptr, const char * font = nullptr)
         : QLineEdit(parent),
-          m_action(get_icon("preferences-desktop-font"), _("Set Font"), nullptr)
+          m_action(QIcon::fromTheme("preferences-desktop-font"), _("Set Font"), nullptr)
     {
         addAction(&m_action, TrailingPosition);
         connect(&m_action, &QAction::triggered, this, &FontEntry::show_dialog);
@@ -72,11 +75,13 @@ EXPORT QFont qfont_from_string(const char * name)
         if (space)
         {
             const char * attr = space + 1;
-            int num = str_to_int(attr);
+
+            char * endptr;
+            long num = strtol(attr, &endptr, 10);
 
             attr_found = true;
 
-            if (num > 0)
+            if (size == 0 && num > 0 && *endptr == '\0')
                 size = num;
             else if (!strcmp(attr, "Light"))
                 weight = QFont::Light;

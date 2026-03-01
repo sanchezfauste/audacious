@@ -17,11 +17,13 @@ fi
 echo "Exporting HEAD to $RELEASENAME ..."
 git archive --format=tar --prefix=$RELEASENAME/ HEAD | tar x || exit 1
 
-echo "Running autoreconf ..."
+echo "Removing unnecessary files ..."
 cd $RELEASENAME || exit 1
-autoreconf || exit 1
-rm -rf .gitignore aclocal.m4 autom4te.cache
+rm -rf .clang-format .github .gitignore .mailmap
 
-echo "Building $RELEASENAME.tar.bz2 ..."
+echo "Creating $RELEASENAME.tar.bz2 ..."
 cd .. || exit 1
 tar cfj $RELEASENAME.tar.bz2 $RELEASENAME || exit 1
+
+echo "Calculating checksum ..."
+sha256sum $RELEASENAME.tar.bz2 > $RELEASENAME.sha256sum || exit 1

@@ -1,35 +1,51 @@
 project('audacious', 'c', 'cpp',
-        version: '4.1',
-        meson_version: '>= 0.46',
+        version: '4.6-devel',
+        meson_version: '>= 0.53',
         default_options: [
           'c_std=gnu99',
-          'cpp_std=gnu++11',
+          'cpp_std=gnu++17',
           'warning_level=1'
         ])
 
 
-copyright = 'Copyright (C) 2001-2021 Audacious developers and others'
+copyright = 'Copyright (C) 2001-2026 Audacious developers and others'
 
 
-qt5 = import('qt5')
 gnome = import('gnome')
 
 
-glib_req = '>= 2.32'
+glib_req = '>= 2.36'
 glib_dep = dependency('glib-2.0', version: glib_req, required: true)
 gmodule_dep = dependency('gmodule-2.0', version: glib_req, required: true)
 thread_dep = dependency('threads', required: true)
 
 
 if get_option('qt')
-  qt_req = '>= 5.2'
-  qt_dep = dependency('qt5', version: qt_req, required: true, modules: ['Core', 'Widgets', 'Gui'])
+  if get_option('qt5')
+    qt = import('qt5')
+    qt_req = '>= 5.12'
+    qt_dep = dependency('qt5', version: qt_req, required: true, modules: ['Core', 'Widgets', 'Gui', 'Svg'])
+  else
+    if meson.version().version_compare('>= 0.57')
+      qt = import('qt6')
+    else
+      error('Qt 6 is only supported since Meson 0.57.')
+    endif
+
+    qt_req = '>= 6.0'
+    qt_dep = dependency('qt6', version: qt_req, required: true, modules: ['Core', 'Widgets', 'Gui', 'Svg'])
+  endif
 endif
 
 
 if get_option('gtk')
-  gtk_req = '>= 2.24'
-  gtk_dep = dependency('gtk+-2.0', version: gtk_req, required: true)
+  if get_option('gtk2')
+    gtk_req = '>= 2.24'
+    gtk_dep = dependency('gtk+-2.0', version: gtk_req, required: true)
+  else
+    gtk_req = '>= 3.24'
+    gtk_dep = dependency('gtk+-3.0', version: gtk_req, required: true)
+  endif
 endif
 
 
@@ -40,6 +56,7 @@ endif
 
 have_darwin = host_machine.system() == 'darwin'
 have_windows = host_machine.system() == 'windows'
+have_cygwin = host_machine.system() == 'cygwin'
 
 
 cc = meson.get_compiler('c')
@@ -56,14 +73,20 @@ if cc.get_id() in ['gcc', 'clang']
 
   cxx_flags = [
     '-Wno-non-virtual-dtor',
-    '-Woverloaded-virtual'
+    '-Woverloaded-virtual',
+    '-fvisibility-inlines-hidden'
   ]
 
   check_cflags = common_flags
   check_cxxflags = common_flags + cxx_flags
 
+  config_h_full_path = join_paths(meson.current_build_dir(), 'config.h')
+
   add_project_arguments(cc.get_supported_arguments(check_cflags), language: 'c')
   add_project_arguments(cxx.get_supported_arguments(check_cxxflags), language: 'cpp')
+  add_project_arguments('-include', config_h_full_path, language: ['c', 'cpp'])
+else
+  error('Please implement -include handling for your chosen compiler.')
 endif
 
 
@@ -82,7 +105,7 @@ endif
 
 
 # XXX - investigate to see if we can do better
-if have_windows
+if have_windows or have_cygwin
   conf.set_quoted('PLUGIN_SUFFIX', '.dll')
 elif have_darwin
   conf.set_quoted('PLUGIN_SUFFIX', '.dylib')
@@ -100,13 +123,26 @@ else
 endif
 
 
-# XXX - why do we have to define this manually?
-if (cxx.has_header('libintl.h'))
-  add_project_arguments('-DHAVE_GETTEXT', language: ['c', 'cpp'])
+if cxx.has_function('sigwait')
+  conf.set10('HAVE_SIGWAIT', true)
+endif
 
-  if have_darwin or have_windows
-    add_project_link_arguments('-lintl', language: ['c', 'cpp'])
+
+if meson.version().version_compare('>= 0.59')
+  intl_dep = dependency('intl', required: false)
+  intl_found = intl_dep.found()
+else
+  if cxx.has_function('ngettext', prefix: '#include <libintl.h>')
+    intl_dep = dependency('', required: false)
+    intl_found = true
+  else
+    intl_dep = cxx.find_library('intl', required: false)
+    intl_found = intl_dep.found()
   endif
+endif
+
+if intl_found
+  conf.set10('HAVE_GETTEXT', true)
 endif
 
 
@@ -144,6 +180,11 @@ endif
 
 if get_option('gtk')
   conf.set10('USE_GTK', true)
+  if get_option('gtk2')
+    conf.set('GLIB_VERSION_MIN_REQUIRED', 'GLIB_VERSION_2_32')
+  else
+    conf.set10('USE_GTK3', true)
+  endif
 endif
 
 
@@ -157,10 +198,19 @@ if get_option('valgrind')
 endif
 
 
+config_h = configure_file(input: 'config.h.meson',
+  output: 'config.h',
+  configuration: conf
+)
+
+
 subdir('src')
 subdir('po')
 subdir('man')
 subdir('images')
+if have_windows
+  subdir('win32')
+endif
 
 
 install_data('AUTHORS', 'COPYING')
@@ -173,7 +223,7 @@ pkg = import('pkgconfig')
 # https://github.com/mesonbuild/meson/issues/5836,
 # use libaudcore_lib as base dependency here.
 pkg.generate(
-  libraries: ['-L${libdir} -laudcore'],
+  libraries: ['-L${libdir} -laudcore', intl_dep],
   variables: [
     'plugin_dir=${libdir}/audacious',
 
@@ -188,20 +238,20 @@ pkg.generate(
 )
 
 
-if meson.version().version_compare('>= 0.53')
-  summary({
-    'Prefix': get_option('prefix'),
-    'Bin dir': get_option('bindir'),
-    'Lib dir': get_option('libdir'),
-    'Data dir': get_option('datadir'),
-  }, section: 'Directories')
+summary({
+  'Prefix': get_option('prefix'),
+  'Bin dir': get_option('bindir'),
+  'Lib dir': get_option('libdir'),
+  'Data dir': get_option('datadir'),
+}, section: 'Directories')
 
-  summary({
-    'D-Bus support': get_option('dbus'),
-    'Qt support': get_option('qt'),
-    'GTK support': get_option('gtk'),
-    'Libarchive support': get_option('libarchive'),
-    'Valgrind analysis support': get_option('valgrind'),
-    'Build stamp': get_option('buildstamp'),
-  }, section: 'Configuration')
-endif
+summary({
+  'D-Bus support': get_option('dbus'),
+  'Qt 5 support': get_option('qt5'),
+  'Qt 6 support': get_option('qt') and not get_option('qt5'),
+  'GTK 2 support': get_option('gtk2'),
+  'GTK 3 support': get_option('gtk') and not get_option('gtk2'),
+  'Libarchive support': get_option('libarchive'),
+  'Valgrind analysis support': get_option('valgrind'),
+  'Build stamp': get_option('buildstamp'),
+}, section: 'Configuration')

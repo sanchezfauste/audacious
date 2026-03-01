@@ -210,8 +210,8 @@ public:
     {
     }
 
-    /* During probing, plugins with higher priority (10 to 0) are tried first.
-     */
+    /* During probing, plugins with higher priority (10 to 1) are tried first.
+     * Plugins with priority 0 are never automatically selected. */
     const int priority;
 
     /* Whether close_audio() and open_audio() must always be called between
@@ -309,7 +309,7 @@ public:
     }
 
     /* Required only for plugins that change the time domain (e.g. a time
-     * stretch) or use read-ahead buffering.  translate_delay() must do two
+     * stretch) or use read-ahead buffering.  adjust_delay() must do two
      * things: first, translate <delay> (which is in milliseconds) from the
      * output time domain back to the input time domain; second, increase
      * <delay> by the size of the read-ahead buffer.  It should return the

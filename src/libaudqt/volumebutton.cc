@@ -21,23 +21,64 @@
 
 #include <QIcon>
 #include <QMenu>
+#include <QMouseEvent>
+#include <QProxyStyle>
 #include <QSlider>
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWheelEvent>
 #include <QWidgetAction>
 
+#include <libaudcore/audstrings.h>
 #include <libaudcore/drct.h>
 #include <libaudcore/hook.h>
+#include <libaudcore/i18n.h>
 #include <libaudcore/runtime.h>
 
 namespace audqt
 {
 
+class VolumeSliderStyle : public QProxyStyle
+{
+public:
+    VolumeSliderStyle()
+    {
+        audqt::setup_proxy_style(this);
+    }
+
+    int styleHint(QStyle::StyleHint hint, const QStyleOption * option = nullptr,
+                  const QWidget * widget = nullptr,
+                  QStyleHintReturn * returnData = nullptr) const override
+    {
+        int styleHint = QProxyStyle::styleHint(hint, option, widget, returnData);
+
+        if (hint == QStyle::SH_Slider_AbsoluteSetButtons)
+            styleHint |= Qt::LeftButton;
+
+        return styleHint;
+    }
+
+    void drawPrimitive(PrimitiveElement element,
+                       const QStyleOption * option,
+                       QPainter * painter,
+                       const QWidget * widget) const override
+    {
+        /* hide dotted rectangle when slider is focussed */
+        if (element == QStyle::PE_FrameFocusRect)
+            return;
+
+        QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
+};
+
 class VolumeButton : public QToolButton
 {
 public:
     VolumeButton(QWidget * parent = nullptr);
+
+protected:
+    void mousePressEvent(QMouseEvent * e) override;
+    void wheelEvent(QWheelEvent * e) override;
 
 private:
     void updateDelta();
@@ -46,13 +87,12 @@ private:
     void setVolume(int val);
     void setUpButton(QToolButton * button, int dir);
 
-    void wheelEvent(QWheelEvent * e);
-
     QMenu m_menu;
     QWidgetAction m_action;
     QWidget m_container;
     QToolButton m_buttons[2];
     QSlider m_slider;
+    int m_old_volume = 0;
     int m_scroll_delta = 0;
 
     HookReceiver<VolumeButton> update_hook{"set volume_delta", this,
@@ -65,6 +105,10 @@ private:
 VolumeButton::VolumeButton(QWidget * parent)
     : QToolButton(parent), m_action(this), m_slider(Qt::Vertical)
 {
+    auto style = new VolumeSliderStyle;
+    style->setParent(this);
+
+    m_slider.setStyle(style);
     m_slider.setMinimumHeight(audqt::sizes.OneInch);
     m_slider.setRange(0, 100);
 
@@ -110,15 +154,15 @@ void VolumeButton::updateDelta()
 void VolumeButton::updateIcon(int val)
 {
     if (val == 0)
-        setIcon(audqt::get_icon("audio-volume-muted"));
+        setIcon(QIcon::fromTheme("audio-volume-muted"));
     else if (val < 34)
-        setIcon(audqt::get_icon("audio-volume-low"));
+        setIcon(QIcon::fromTheme("audio-volume-low"));
     else if (val < 67)
-        setIcon(audqt::get_icon("audio-volume-medium"));
+        setIcon(QIcon::fromTheme("audio-volume-medium"));
     else
-        setIcon(audqt::get_icon("audio-volume-high"));
+        setIcon(QIcon::fromTheme("audio-volume-high"));
 
-    setToolTip(QString("%1 %").arg(val));
+    setToolTip(QString(str_printf(_("%d%%"), val)));
 }
 
 void VolumeButton::updateVolume()
@@ -152,6 +196,24 @@ void VolumeButton::setUpButton(QToolButton * button, int dir)
     connect(button, &QAbstractButton::clicked, [this, dir]() {
         m_slider.setValue(m_slider.value() + dir * aud_get_int("volume_delta"));
     });
+}
+
+void VolumeButton::mousePressEvent(QMouseEvent * e)
+{
+    /* (un)mute with middle mouse button */
+    if (e->button() == Qt::MiddleButton)
+    {
+        int current_volume = aud_drct_get_volume_main();
+        if (current_volume)
+        {
+            m_old_volume = current_volume;
+            aud_drct_set_volume_main(0);
+        }
+        else
+            aud_drct_set_volume_main(m_old_volume);
+    }
+
+    QToolButton::mousePressEvent(e);
 }
 
 void VolumeButton::wheelEvent(QWheelEvent * e)

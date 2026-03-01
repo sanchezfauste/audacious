@@ -260,6 +260,7 @@ static void show_import_dialog(QWidget * parent, PresetView * view,
     dialog->setFileMode(QFileDialog::ExistingFile);
     dialog->setLabelText(QFileDialog::Accept, _("Load"));
     dialog->setNameFilter(_(name_filter));
+    dialog->setWindowRole("file-dialog");
 
     auto do_import = [dialog, view, revert_btn]() {
         auto urls = dialog->selectedUrls();
@@ -297,6 +298,7 @@ static void show_export_dialog(QWidget * parent, const EqualizerPreset & preset)
     dialog->setFileMode(QFileDialog::AnyFile);
     dialog->setLabelText(QFileDialog::Accept, _("Save"));
     dialog->setNameFilter(_(name_filter));
+    dialog->setWindowRole("file-dialog");
 
     /* TODO: replace other illegal characters on Win32 */
     auto safe =
@@ -326,7 +328,7 @@ static QWidget * create_preset_win()
 
     auto edit = new QLineEdit;
     auto save_btn = new QPushButton(_("Save Preset"));
-    save_btn->setIcon(get_icon("document-save"));
+    save_btn->setIcon(QIcon::fromTheme("document-save"));
     save_btn->setDisabled(true);
 
     auto hbox = make_hbox(nullptr);
@@ -335,15 +337,15 @@ static QWidget * create_preset_win()
     hbox->addWidget(save_btn);
 
     auto import_btn = new QPushButton(_("Import"));
-    import_btn->setIcon(get_icon("document-open"));
+    import_btn->setIcon(QIcon::fromTheme("document-open"));
 
     auto export_btn = new QPushButton(_("Export"));
-    export_btn->setIcon(get_icon("document-save"));
+    export_btn->setIcon(QIcon::fromTheme("document-save"));
 
     auto view = new PresetView(export_btn);
 
     auto revert_btn = new QPushButton(_("Revert"));
-    revert_btn->setIcon(get_icon("edit-undo"));
+    revert_btn->setIcon(QIcon::fromTheme("edit-undo"));
     revert_btn->setDisabled(true);
 
     auto hbox2 = make_hbox(nullptr);

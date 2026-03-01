@@ -1,5 +1,5 @@
 /*
- * equalizer.cc
+ * equalizer-qt.cc
  * Copyright 2014 Ariadne Conill
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,19 +47,19 @@ public:
     {
     }
 
-    QSize minimumSizeHint() const
+    QSize minimumSizeHint() const override
     {
         QSize s = QLabel::minimumSizeHint();
         return QSize(s.height(), s.width());
     }
 
-    QSize sizeHint() const
+    QSize sizeHint() const override
     {
         QSize s = QLabel::sizeHint();
         return QSize(s.height(), s.width());
     }
 
-    void paintEvent(QPaintEvent *)
+    void paintEvent(QPaintEvent *) override
     {
         QPainter p(this);
         p.rotate(270);
@@ -162,7 +162,11 @@ EqualizerWindow::EqualizerWindow()
     updatePreamp();
     updateBands();
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+    connect(&m_onoff_checkbox, &QCheckBox::checkStateChanged, [](Qt::CheckState state) {
+#else
     connect(&m_onoff_checkbox, &QCheckBox::stateChanged, [](int state) {
+#endif
         aud_set_bool("equalizer_active", (state == Qt::Checked));
     });
 

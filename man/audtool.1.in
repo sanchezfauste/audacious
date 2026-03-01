@@ -227,6 +227,9 @@ Print the ``stop after each song'' option (``on'' or ``off'').
 .TP
 .B --playlist-stop-after-each-toggle
 Toggle the ``stop after each song'' option.
+.B --playlist-save \fIpath\fR
+Save the playlist to the given file path.  The format is determined
+by the file extension.
 
 .SS More playlist commands:
 
@@ -371,7 +374,7 @@ Commands may be prefixed with `--' (GNU-style long options) or not, your choice.
 .SH BUGS
 
 There are no known bugs in audtool at this time; if you find any please report
-them at \fIhttps://redmine.audacious-media-player.org/projects/audacious\fR.
+them at \fIhttps://github.com/audacious-media-player/audacious/issues\fR.
 
 .SH AUTHORS
 

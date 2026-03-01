@@ -23,6 +23,9 @@
 #include <libaudcore/i18n.h>
 #include <libaudcore/runtime.h>
 
+/* we still use GtkImageMenuItem until there is a good alternative */
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 static GtkWidget * image_menu_item_new (const char * text, const char * icon)
 {
     GtkWidget * widget = gtk_image_menu_item_new_with_mnemonic (text);
@@ -35,6 +38,8 @@ static GtkWidget * image_menu_item_new (const char * text, const char * icon)
 
     return widget;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 static void toggled_cb (GtkCheckMenuItem * check, const AudguiMenuItem * item)
 {

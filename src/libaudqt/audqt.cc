@@ -1,6 +1,6 @@
 /*
- * util.cc
- * Copyright 2014 Ariadne Conill
+ * audqt.cc
+ * Copyright 2014-2021 Ariadne Conill and John Lindgren
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -17,17 +17,18 @@
  * the use of this software.
  */
 
-#include <stdlib.h>
-
 #include <QApplication>
 #include <QLibraryInfo>
+#include <QProxyStyle>
 #include <QPushButton>
 #include <QScreen>
+#include <QStyleFactory>
 #include <QTranslator>
 #include <QVBoxLayout>
 
 #include <libaudcore/audstrings.h>
 #include <libaudcore/i18n.h>
+#include <libaudcore/interface.h>
 #include <libaudcore/runtime.h>
 
 #include "libaudqt-internal.h"
@@ -49,6 +50,11 @@ static const char * const audqt_defaults[] = {
     "eq_presets_visible", "FALSE",
     "equalizer_visible", "FALSE",
     "queue_manager_visible", "FALSE",
+    "close_jtf_dialog", "TRUE",
+#ifdef _WIN32
+    "theme", "dark",
+    "icon_theme", "audacious-flat-dark",
+#endif
     nullptr
 };
 /* clang-format on */
@@ -71,12 +77,70 @@ static void load_qt_translations()
         QApplication::installTranslator(&translators[1]);
 }
 
+void set_icon_theme()
+{
+    // Make sure that ":/icons" is in the theme search path. In Qt 6 it
+    // is added at startup (see QIconLoader::themeSearchPaths()) but in
+    // some cases gets removed later (see QIconLoader::setThemeName()).
+    // This seems to be a regression since Qt 5.
+    auto themePaths = QIcon::themeSearchPaths();
+    if (!themePaths.contains(":/icons"))
+        QIcon::setThemeSearchPaths(themePaths << ":/icons");
+
+    QIcon::setThemeName((QString)aud_get_str("audqt", "icon_theme"));
+
+    // make sure we have a valid icon theme
+    auto isValid = [](QString theme) {
+        return !theme.isEmpty() && theme != "hicolor";
+    };
+
+    if (!isValid(QIcon::themeName()))
+    {
+        QString fallback = QIcon::fallbackThemeName();
+        if (isValid(fallback))
+            QIcon::setThemeName(fallback);
+        else
+            QIcon::setThemeName("audacious-flat");
+    }
+
+    // add fallback icons just to be sure
+    auto paths = QIcon::fallbackSearchPaths();
+    auto path = ":/icons/audacious-flat/scalable";
+    if (!paths.contains(path))
+        QIcon::setFallbackSearchPaths(paths << path);
+
+    qApp->setWindowIcon(QIcon::fromTheme("audacious"));
+}
+
 EXPORT void init()
 {
     if (init_count++)
         return;
 
     aud_config_set_defaults("audqt", audqt_defaults);
+    log_init();
+
+    // The QApplication instance is created only once and is not deleted
+    // by audqt::cleanup(). If it already exists, we are done here.
+    if (qApp)
+        return;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) && defined(_WIN32)
+    QApplication::setHighDpiScaleFactorRoundingPolicy(
+        Qt::HighDpiScaleFactorRoundingPolicy::Floor);
+#endif
+
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+    // Use X11/XWayland by default, but allow to overwrite it.
+    // Especially the Winamp interface is not usable yet on Wayland
+    // due to limitations regarding application-side window positioning.
+    auto platform = qgetenv("QT_QPA_PLATFORM");
+    if (platform.isEmpty() && qEnvironmentVariableIsSet("DISPLAY"))
+        qputenv("QT_QPA_PLATFORM", "xcb");
+    else if (platform != "xcb")
+        AUDWARN("X11/XWayland was not detected. This is unsupported, "
+                "please do not report bugs.\n");
+#endif
 
     static char app_name[] = "audacious";
     static int dummy_argc = 1;
@@ -86,18 +150,11 @@ EXPORT void init()
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qapp->setAttribute(Qt::AA_UseHighDpiPixmaps);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     qapp->setAttribute(Qt::AA_DisableWindowContextHelpButton);
-#endif // >= 5.10
-#endif // < 6.0
-#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
-    qapp->setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
 #endif
+    qapp->setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
 
     qapp->setApplicationName(_("Audacious"));
-    if (qapp->windowIcon().isNull())
-        qapp->setWindowIcon(audqt::get_icon(app_name));
-
     qapp->setQuitOnLastWindowClosed(false);
 
     sizes_local.OneInch =
@@ -114,6 +171,10 @@ EXPORT void init()
         QMargins(sizes.EightPt, sizes.EightPt, sizes.EightPt, sizes.EightPt);
 
     load_qt_translations();
+    set_icon_theme();
+
+    if (!strcmp(aud_get_str("audqt", "theme"), "dark"))
+        enable_dark_theme();
 
 #ifdef _WIN32
     // On Windows, Qt uses 9 pt in specific places (such as QMenu) but
@@ -122,18 +183,19 @@ EXPORT void init()
     // to use 9 pt in most places so let's try to do the same.
     QApplication::setFont(QApplication::font("QMenu"));
 #endif
-#ifdef Q_OS_MAC // Mac-specific font tweaks
+#ifdef Q_OS_MAC
+    // Mac-specific font tweaks
     QApplication::setFont(QApplication::font("QSmallFont"), "QDialog");
     QApplication::setFont(QApplication::font("QSmallFont"), "QTreeView");
     QApplication::setFont(QApplication::font("QTipLabel"), "QStatusBar");
+
+    // Handle MacOS dock activation (AppKit applicationShouldHandleReopen)
+    QObject::connect(qapp, &QApplication::applicationStateChanged, [](auto state) {
+        if (state == Qt::ApplicationState::ApplicationActive)
+            aud_ui_show(true);
+    });
 #endif
-
-    log_init();
 }
-
-EXPORT void run() { qApp->exec(); }
-
-EXPORT void quit() { qApp->quit(); }
 
 EXPORT void cleanup()
 {
@@ -146,20 +208,13 @@ EXPORT void cleanup()
     log_inspector_hide();
     plugin_prefs_hide();
     prefswin_hide();
+    songwin_hide();
 
     log_cleanup();
 
-    delete qApp;
-}
-
-EXPORT QIcon get_icon(const char * name)
-{
-    auto icon = QIcon::fromTheme(name);
-
-    if (icon.isNull())
-        icon = QIcon(QString(":/") + name + ".svg");
-
-    return icon;
+    // We do not delete the QApplication here due to issues that arise
+    // if it is deleted and then re-created. Instead, it is deleted
+    // later during shutdown; see mainloop_cleanup() in libaudcore.
 }
 
 EXPORT QGradientStops dark_bg_gradient(const QColor & base)
@@ -215,6 +270,19 @@ EXPORT QVBoxLayout * make_vbox(QWidget * parent, int spacing)
     return layout;
 }
 
+EXPORT void setup_proxy_style(QProxyStyle * style)
+{
+    // set the correct base style (dark or native)
+    if (!strcmp(aud_get_str("audqt", "theme"), "dark"))
+        style->setBaseStyle(create_dark_style());
+    else
+        style->setBaseStyle(nullptr);
+
+    // detect and respond to application-wide style change
+    QObject::connect(qApp->style(), &QObject::destroyed, style,
+                     [style]() { setup_proxy_style(style); });
+}
+
 EXPORT void enable_layout(QLayout * layout, bool enabled)
 {
     int count = layout->count();
@@ -268,6 +336,7 @@ EXPORT void simple_message(const char * title, const char * text,
     msgbox->button(QMessageBox::Close)->setText(translate_str(N_("_Close")));
     msgbox->setAttribute(Qt::WA_DeleteOnClose);
     msgbox->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    msgbox->setWindowRole("message");
     msgbox->show();
 }
 
